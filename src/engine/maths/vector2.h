@@ -34,7 +34,7 @@ public:
 
     T& operator[](uint32_t i)
     {
-        assert(i > -1 && i < 2);
+        assert(i < 2);
 
         switch (i)
         {
@@ -47,7 +47,7 @@ public:
 
     const T& operator[](uint32_t i) const
     {
-        assert(i > -1 && i < 2);
+        assert(i < 2);
 
         switch (i)
         {

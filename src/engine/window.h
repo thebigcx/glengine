@@ -18,6 +18,9 @@ public:
 
     GLFWwindow* get_native_handle() const { return m_window_handle; }
 
+    uint32_t get_width() const { return m_width; }
+    uint32_t get_height() const { return m_height; }
+
 private:
     GLFWwindow* m_window_handle = nullptr;
 

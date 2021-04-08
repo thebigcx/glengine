@@ -5,11 +5,16 @@
 #include <unordered_map>
 #include <typeindex>
 
+#include "engine/transform.h"
+#include "engine/component.h"
+
 class Scene;
-class Component;
+class Event;
 
 class Node
 {
+    friend class Transform;
+
 public:
     Node(const std::string& name, Node* parent, Scene* scene);
     ~Node();
@@ -22,18 +27,35 @@ public:
     const std::vector<Node*>& get_children() const { return m_children; }
 
     template<typename T, typename... Args>
-    Component* create_component(Args&&... args)
+    T* create_component(Args&&... args)
     {
         Component* component = new T(std::forward<Args>(args)...);
+        component->m_owner = this;
         m_components.emplace(typeid(T), component);
-        return component;
+        return static_cast<T*>(component);
     }
+
+    template<typename T>
+    T* get_component()
+    {
+        if (!has_component<T>())
+        {
+            printf("Node does not contain component.\n");
+            return nullptr;
+        }
+
+        return static_cast<T*>(m_components.at(typeid(T)));
+    }
+
+    Transform& get_transform() { return m_transform; }
 
     template<typename T>
     bool has_component()
     {
         return m_components.find(typeid(T)) != m_components.end();
     }
+
+    void on_event(Event& e);
 
 private:
     std::string m_name;
@@ -43,4 +65,9 @@ private:
 
     std::vector<Node*> m_children;
     std::unordered_map<std::type_index, Component*> m_components;
+
+    Transform m_transform;
+
+    // Visible to transform class (friend)
+    void set_transform_change();
 };

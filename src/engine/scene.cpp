@@ -12,3 +12,11 @@ Node* Scene::create_node(const std::string& name)
     m_nodes.emplace_back(node);
     return node;
 }
+
+void Scene::on_event(Event& e)
+{
+    for (auto& node : m_nodes)
+    {
+        node->on_event(e);
+    }
+}

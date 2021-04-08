@@ -8,6 +8,8 @@
 #include "engine/maths/vector4.h"
 
 class Texture;
+class Camera;
+class Shader;
 
 class Renderer2D
 {
@@ -24,17 +26,19 @@ private:
         float index;
     };
 
-    static struct Renderer2DData
+    static inline struct Renderer2DData
     {
         uint32_t vao, vbo, ebo;
 
-        SpriteVertex* vertex_base = nullptr;
-        SpriteVertex* vertex_current = nullptr;
+        SpriteVertex* vertex_base;
+        SpriteVertex* vertex_ptr;
 
-        uint32_t vertex_count = 0;
-        uint32_t texture_slot_index = 1;
+        uint32_t vertex_count;
+        uint32_t texture_slot_index;
 
         std::shared_ptr<Texture> textures[32];
+
+        std::weak_ptr<Shader> shader;
 
     } m_data;
 
@@ -43,11 +47,12 @@ public:
     static void finalize();
 
     static void start_batch();
+    static void start_scene(const Camera& camera);
     static void flush_batch();
 
     static void render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color);
 
-    static void render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size);
+    static void render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2);
 
     static void render_string(const std::string& str);
 };

@@ -3,6 +3,8 @@
 #include "engine/application.h"
 
 class Scene;
+class Camera;
+class Texture;
 
 class Editor : public Application
 {
@@ -15,4 +17,9 @@ public:
 
 private:
     std::shared_ptr<Scene> m_current_scene = nullptr;
+
+    std::shared_ptr<Texture> m_texture;
+    float m_x = 0;
+
+    Camera* m_camera;
 };

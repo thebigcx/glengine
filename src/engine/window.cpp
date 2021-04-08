@@ -13,6 +13,7 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
     glfwMakeContextCurrent(m_window_handle);
 
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+    glViewport(0, 0, width, height);
 }
 
 Window::~Window()

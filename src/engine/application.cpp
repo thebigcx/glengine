@@ -1,4 +1,5 @@
 #include "engine/application.h"
+#include "engine/renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -11,6 +12,7 @@ Application::Application()
 void Application::run()
 {
     m_window = std::make_unique<Window>(1920, 1080, "Application");
+    Renderer::init();
 
     on_start();
 
@@ -22,6 +24,7 @@ void Application::run()
             m_is_running = false;
         }
 
+        glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         on_update(1);
 

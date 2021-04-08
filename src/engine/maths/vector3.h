@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 
 #include "engine/maths/vector.h"
 
@@ -34,7 +35,7 @@ public:
 
     T& operator[](uint32_t i)
     {
-        assert(i > -1 && i < 3);
+        assert(i < 3);
 
         switch (i)
         {
@@ -48,7 +49,7 @@ public:
 
     const T& operator[](uint32_t i) const
     {
-        assert(i > -1 && i < 3);
+        assert(i < 3);
 
         switch (i)
         {
@@ -128,6 +129,11 @@ public:
         x--; y--; z--;
         return *this;
     }
+
+    static float mag(const Vector<3, T>& v);
+    static Vector<3, T> normalize(const Vector<3, T>& v);
+    static Vector<3, T> cross(const Vector<3, T>& a, const Vector<3, T>& b);
+    static T dot(const Vector<3, T>& a, const Vector<3, T>& b);
     
     T x, y, z;
 };
@@ -191,6 +197,31 @@ template<typename T>
 Vector<3, T> operator/(const Vector<3, T>& a, const T& b)
 {
     return Vector<3, T>(a.x / b, a.y / b, a.z / b);
+}
+
+template<typename T>
+float Vector<3, T>::mag(const Vector<3, T>& v)
+{
+    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+template<typename T>
+Vector<3, T> Vector<3, T>::normalize(const Vector<3, T>& v)
+{
+    float m = 1.f / Vector<3, T>::mag(v);
+    return Vector<3, T>(v.x * m, v.y * m, v.z * m);
+}
+
+template<typename T>
+Vector<3, T> Vector<3, T>::cross(const Vector<3, T>& a, const Vector<3, T>& b)
+{
+    return Vector<3, T>(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+}
+
+template<typename T>
+T Vector<3, T>::dot(const Vector<3, T>& a, const Vector<3, T>& b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 typedef Vector<3, float>        Vector3f;
