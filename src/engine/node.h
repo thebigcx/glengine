@@ -55,10 +55,27 @@ public:
         return m_components.find(typeid(T)) != m_components.end();
     }
 
+    template<typename T>
+    void remove_component()
+    {
+        if (!has_component<T>())
+            return;
+
+        m_components.erase(typeid(T));
+    }
+
+    void on_render();
+    void on_update(float dt);
     void on_event(Event& e);
+
+    void set_name(const std::string& name) { m_name = name; }
+
+    void set_enabled(bool enabled = true) { m_enabled = enabled; }
+    bool is_enabled() const { return m_enabled; }
 
 private:
     std::string m_name;
+    bool m_enabled = true;
 
     Node* m_parent;
     Scene* m_scene;

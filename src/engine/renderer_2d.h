@@ -6,6 +6,7 @@
 #include "engine/maths/vector2.h"
 #include "engine/maths/vector3.h"
 #include "engine/maths/vector4.h"
+#include "engine/maths/matrix4.h"
 
 class Texture;
 class Camera;
@@ -47,8 +48,9 @@ public:
     static void finalize();
 
     static void start_batch();
-    static void start_scene(const Camera& camera);
+    static void start_scene(const Matrix4f& view, const Matrix4f projection);
     static void flush_batch();
+    static void finish_scene();
 
     static void render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color);
 

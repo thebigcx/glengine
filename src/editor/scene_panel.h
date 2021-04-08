@@ -18,4 +18,6 @@ private:
     static inline Node* m_selected_node = nullptr;
 
     static void render_node(Node* node);
+
+    static inline Node* m_node_to_delete;
 };

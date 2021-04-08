@@ -9,18 +9,27 @@ Transform::Transform(Node* owner)
 
 void Transform::set_translation(const Vector3f& translation)
 {
-    m_translation = translation;
-    m_owner->set_transform_change();
+    if (m_translation != translation)
+    {
+        m_translation = translation;
+        m_owner->set_transform_change();
+    }
 }
 
 void Transform::set_rotation(const Vector3f& rotation)
 {
-    m_rotation = rotation;
-    m_owner->set_transform_change();
+    if (m_rotation != rotation)
+    {
+        m_rotation = rotation;
+        m_owner->set_transform_change();
+    }
 }
 
 void Transform::set_scale(const Vector3f& scale)
 {
-    m_scale = scale;
-    m_owner->set_transform_change();
+    if (m_scale != scale)
+    {
+        m_scale = scale;
+        m_owner->set_transform_change();
+    }
 }

@@ -12,6 +12,13 @@ void ImGuiLayer::init()
     auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+    io.Fonts->AddFontFromFileTTF("assets/font.ttf", 24.0f);
+
+    static ImWchar ranges[] = { 0xf000, 0xf3ff, 0 };
+    ImFontConfig config;
+    config.MergeMode = true;
+    fork_awesome_font = io.Fonts->AddFontFromFileTTF("assets/forkawesome.ttf", 24, &config, ranges);
+
     ImGui_ImplGlfw_InitForOpenGL(Application::get_instance()->get_window()->get_native_handle(), true);
     ImGui_ImplOpenGL3_Init("#version 460");
 }

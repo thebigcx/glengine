@@ -5,11 +5,16 @@
 
 class Node;
 class Event;
+class EditorCamera;
 
 class Scene
 {
 public:
     Scene();
+
+    void on_render();
+    void on_editor_render(const EditorCamera& camera);
+    void on_update(float dt);
 
     Node* create_node(const std::string& name);
 

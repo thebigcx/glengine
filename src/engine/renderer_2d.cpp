@@ -80,12 +80,12 @@ void Renderer2D::start_batch()
     m_data.texture_slot_index = 1;
 }
 
-void Renderer2D::start_scene(const Camera& camera)
+void Renderer2D::start_scene(const Matrix4f& view, const Matrix4f projection)
 {
     m_data.shader.lock()->bind();
-    
-    m_data.shader.lock()->uniform_matrix4("u_projection", camera.get_projection_matrix());
-    m_data.shader.lock()->uniform_matrix4("u_view", camera.get_view_matrix());
+
+    m_data.shader.lock()->uniform_matrix4("u_projection", projection);
+    m_data.shader.lock()->uniform_matrix4("u_view", view);
     m_data.shader.lock()->uniform_matrix4("u_transform", Matrix4f(1.0f));
 
     start_batch();
@@ -186,4 +186,9 @@ void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Ve
 void Renderer2D::render_string(const std::string& str)
 {
 
+}
+
+void Renderer2D::finish_scene()
+{
+    flush_batch();
 }

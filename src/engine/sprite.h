@@ -6,4 +6,6 @@ class Sprite : public Component
 {
 public:
     Sprite() {}
+
+    void on_render() override;
 };

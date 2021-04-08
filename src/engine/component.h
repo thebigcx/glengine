@@ -12,6 +12,7 @@ public:
 
     Node* get_owner() const { return m_owner; }
 
+    virtual void on_render() {}; // Update and Render are separate to allow multithreading
     virtual void on_update(float dt) {}
     virtual void on_event(Event& e) {}
     virtual void on_transform_change() {}

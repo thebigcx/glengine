@@ -24,6 +24,9 @@ Node* Node::create_child(const std::string& name)
 
 void Node::set_transform_change()
 {
+    if (!m_enabled)
+        return;
+
     for (auto& c : m_components)
     {
         c.second->on_transform_change();
@@ -37,6 +40,9 @@ void Node::set_transform_change()
 
 void Node::on_event(Event& e)
 {
+    if (!m_enabled)
+        return;
+
     for (auto& c : m_components)
     {
         c.second->on_event(e);
@@ -45,5 +51,37 @@ void Node::on_event(Event& e)
     for (auto& c : m_children)
     {
         c->on_event(e);
+    }
+}
+
+void Node::on_render()
+{
+    if (!m_enabled)
+        return;
+
+    for (auto& c : m_components)
+    {
+        c.second->on_render();
+    }
+
+    for (auto& c : m_children)
+    {
+        c->on_render();
+    }
+}
+
+void Node::on_update(float dt)
+{
+    if (!m_enabled)
+        return;
+
+    for (auto& c : m_components)
+    {
+        c.second->on_update(dt);
+    }
+
+    for (auto& c : m_children)
+    {
+        c->on_update(dt);
     }
 }

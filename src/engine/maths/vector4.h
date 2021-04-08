@@ -59,7 +59,7 @@ public:
             case 4: return w;
         }
 
-        return 0; // Never reaches
+        return x; // Never reaches (make g++ -Wall happy)
     }
 
     Vector<4, T>& operator=(const Vector<4, T>& v)

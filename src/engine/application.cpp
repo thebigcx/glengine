@@ -1,5 +1,6 @@
 #include "engine/application.h"
 #include "engine/renderer.h"
+#include "engine/event.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -15,6 +16,10 @@ void Application::run()
     Renderer::init();
 
     on_start();
+
+    // Send an initial resize event to configure everything
+    WindowResizeEvent e(m_window->get_width(), m_window->get_height());
+    on_event(e);
 
     while (m_is_running)
     {

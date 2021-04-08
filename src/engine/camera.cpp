@@ -3,6 +3,7 @@
 #include "engine/node.h"
 #include "engine/maths/vector3.h"
 #include "engine/maths/quaternion.h"
+#include "engine/maths/math.h"
 
 #include <iostream>
 
@@ -22,10 +23,11 @@ void Camera::on_event(Event& e)
 
 void Camera::on_transform_change()
 {
-    Quaternionf q(m_owner->get_transform().get_rotation());
+    Vector3f rotation = m_owner->get_transform().get_rotation();
+    Quaternionf q(Vector3f(Math::to_radians(rotation.x), Math::to_radians(rotation.y), Math::to_radians(rotation.z)));
 
     Vector3f pos = m_owner->get_transform().get_translation();
-    Vector3f direction = Quaternionf::rotate(q, Vector3f(0, 0, -1)); // Multiple rotation with a foward vector
+    Vector3f direction = pos + Quaternionf::rotate(q, Vector3f(0, 0, -1)); // Multiple rotation with a foward vector
     Vector3f up  = Quaternionf::rotate(q, Vector3f(0, 1, 0)); // Multiple rotation with an up vector
 
     m_view_matrix = Matrix4f::look_at(pos, direction, up);
@@ -59,6 +61,12 @@ void Camera::set_perspective(float fov, float near_clip, float far_clip)
     calculate_projection();
 }
 
+void Camera::set_projection_type(CameraProjection type)
+{
+    m_projection_type = type;
+    calculate_projection();
+}
+
 void Camera::calculate_projection()
 {
     if (m_projection_type == CameraProjection::Perspective)
@@ -74,4 +82,18 @@ void Camera::calculate_projection()
 
         m_projection_matrix = Matrix4f::ortho(left, right, bottom, top, m_ortho_data.near_clip, m_ortho_data.far_clip);
     }
+}
+
+void Camera::set_main_camera(Camera* camera)
+{
+    if (main_camera)
+    {
+        main_camera->m_is_main_camera = false;
+    }
+    else
+    {
+        main_camera = camera;
+    }
+
+    camera->m_is_main_camera = true;
 }

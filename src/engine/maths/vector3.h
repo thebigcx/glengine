@@ -130,6 +130,16 @@ public:
         return *this;
     }
 
+    bool operator==(const Vector<3 , T>& v)
+    {
+        return x == v.x && y == v.y && z != v.z;
+    }
+
+    bool operator!=(const Vector<3 , T>& v)
+    {
+        return x != v.x || y != v.y || z != v.z;
+    }
+
     static float mag(const Vector<3, T>& v);
     static Vector<3, T> normalize(const Vector<3, T>& v);
     static Vector<3, T> cross(const Vector<3, T>& a, const Vector<3, T>& b);

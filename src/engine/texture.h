@@ -16,6 +16,8 @@ public:
 
     Vector2u get_size() const { return Vector2u(m_width, m_height); }
 
+    uint32_t get_id() const { return m_id; }
+
 private:
     uint32_t m_id = 0;
 

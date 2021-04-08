@@ -1,7 +1,16 @@
 #include "engine/window.h"
 #include "engine/glad/glad.h"
+#include "engine/application.h"
+#include "engine/event.h"
 
 #include <GLFW/glfw3.h>
+
+static void framebuffer_size_callback(GLFWwindow* window_handle, int width, int height)
+{
+    Application* app = (Application*)glfwGetWindowUserPointer(window_handle);
+    WindowResizeEvent event(width, height);
+    app->on_event(event);
+}
 
 Window::Window(uint32_t width, uint32_t height, const std::string& title)
     : m_width(width), m_height(height), m_title(title)
@@ -11,6 +20,10 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
 
     glfwSwapInterval(1);
     glfwMakeContextCurrent(m_window_handle);
+
+    glfwSetWindowUserPointer(m_window_handle, Application::get_instance());
+
+    glfwSetFramebufferSizeCallback(m_window_handle, framebuffer_size_callback);
 
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glViewport(0, 0, width, height);
