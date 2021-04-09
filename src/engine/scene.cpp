@@ -4,6 +4,8 @@
 #include "engine/camera.h"
 #include "editor/editor_camera.h"
 
+#include <algorithm>
+
 Scene::Scene()
 {
 
@@ -49,6 +51,11 @@ Node* Scene::create_node(const std::string& name)
     Node* node = new Node(name, nullptr, this);
     m_nodes.emplace_back(node);
     return node;
+}
+
+void Scene::remove_node(Node* node)
+{
+    m_nodes.erase(std::find(m_nodes.begin(), m_nodes.end(), node));
 }
 
 void Scene::on_event(Event& e)

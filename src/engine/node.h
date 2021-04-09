@@ -20,6 +20,7 @@ public:
     ~Node();
 
     Node* create_child(const std::string& name);
+    void remove_child(Node* child);
 
     const std::string& get_name() const { return m_name; }
     Node* get_parent() const { return m_parent; }

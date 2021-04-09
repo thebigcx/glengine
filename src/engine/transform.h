@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/maths/vector3.h"
+#include "engine/maths/matrix4.h"
 
 class Node;
 
@@ -16,6 +17,8 @@ public:
     const Vector3f& get_translation() const { return m_translation; }
     const Vector3f& get_rotation() const { return m_rotation; }
     const Vector3f& get_scale() const { return m_scale; }
+
+    Matrix4f get_world_transform() const;
 
 private:
     Vector3f m_translation, m_rotation, m_scale;

@@ -107,12 +107,12 @@ void Renderer2D::flush_batch()
     glDrawElements(GL_TRIANGLES, m_data.vertex_count * 6/4, GL_UNSIGNED_INT, 0);
 }
 
-void Renderer2D::render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector3f& rotation)
+void Renderer2D::render_quad(const Matrix4f& transform, const Vector3f& color)
 {
-    render_sprite(m_data.textures[0], pos, size, color, Vector2f(0, 0), Vector2f(1, 1), rotation);
+    render_sprite(m_data.textures[0], transform, color, Vector2f(0, 0), Vector2f(1, 1));
 }
 
-void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2, const Vector3f& rotation)
+void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Matrix4f& transform, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2)
 {
     float tex_index = 0.f;
 
@@ -155,27 +155,25 @@ void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Ve
         { co1.x, co2.y }
     };
 
-    Quaternionf q(rotation);
-
-    m_data.vertex_ptr->pos = q * Vector3f(pos, 0);
+    m_data.vertex_ptr->pos = transform * Vector4f(0, 0, 0, 1);
     m_data.vertex_ptr->uv = uvs[0];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = q * Vector3f(pos.x + size.x, pos.y, 0);
+    m_data.vertex_ptr->pos = transform * Vector4f(1, 0, 0, 1);
     m_data.vertex_ptr->uv = uvs[1];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = q * Vector3f(pos.x + size.x, pos.y + size.y, 0);
+    m_data.vertex_ptr->pos = transform * Vector4f(1, 1, 0, 1);
     m_data.vertex_ptr->uv = uvs[2];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = q * Vector3f(pos.x, pos.y + size.y, 0);
+    m_data.vertex_ptr->pos = transform * Vector4f(0, 1, 0, 1);
     m_data.vertex_ptr->uv = uvs[3];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;

@@ -72,6 +72,15 @@ void ScenePanel::imgui_render()
 
     if (m_node_to_delete)
     {
+        if (m_node_to_delete->get_parent())
+        {
+            m_node_to_delete->get_parent()->remove_child(m_node_to_delete);
+        }
+        else
+        {
+            m_scene_context.lock()->remove_node(m_node_to_delete);
+        }
+
         m_node_to_delete = nullptr;
     }
 

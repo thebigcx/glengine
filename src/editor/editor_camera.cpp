@@ -3,9 +3,6 @@
 #include "engine/keyboard.h"
 #include "engine/mouse.h"
 
-#include "editor/glm/glm.hpp"
-#include "editor/glm/gtx/string_cast.hpp"
-
 EditorCamera::EditorCamera()
 {
     
@@ -75,8 +72,6 @@ void EditorCamera::calculate_projection()
 {
     m_aspect = static_cast<float>(m_viewport_width) / static_cast<float>(m_viewport_height);
     m_projection_matrix = Matrix4f::perspective(static_cast<float>(Math::to_radians(m_fov)), m_aspect, m_near_clip, m_far_clip);
-
-    glm::mat4 m = glm::perspective(static_cast<float>(Math::to_radians(m_fov)), m_aspect, m_near_clip, m_far_clip);
 }
 
 void EditorCamera::calculate_view()

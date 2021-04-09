@@ -7,6 +7,7 @@ class Node;
 class Event;
 class EditorCamera;
 
+// TODO: Scene should inherit from node, a root node. Would make children and nodes much easier.
 class Scene
 {
 public:
@@ -17,6 +18,7 @@ public:
     void on_update(float dt);
 
     Node* create_node(const std::string& name);
+    void remove_node(Node* node);
 
     const std::vector<Node*>& get_nodes() const { return m_nodes; }
 

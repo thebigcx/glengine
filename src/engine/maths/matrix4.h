@@ -156,7 +156,7 @@ Matrix<4, 4, T> Matrix<4, 4, T>::rotate(const Matrix<4, 4, T>& m, const T& angle
     T s = std::sin(angle);
     T omc = static_cast<T>(1) - c;
 
-    Vector<3, T> axis(normalize(v));
+    Vector<3, T> axis(Vector3f::normalize(v));
 
     T x = axis.x;
     T y = axis.y;

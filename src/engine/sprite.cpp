@@ -9,24 +9,22 @@ void Sprite::on_render()
     {
         if (m_use_uvs)
         {
-            Renderer2D::render_sprite(m_texture.lock(), m_owner->get_transform().get_translation(), 
-                                      m_owner->get_transform().get_scale(), Vector3f(1, 0, 0), 
-                                      m_uv1, m_uv2, m_owner->get_transform().get_rotation());
+            Vector2f uv1 = m_uv1 / Vector2f(m_texture.lock()->get_size());
+            Vector2f uv2 = m_uv2 / Vector2f(m_texture.lock()->get_size());
+
+            Renderer2D::render_sprite(m_texture.lock(), m_owner->get_transform().get_world_transform(), m_color, uv1, uv2);
         }
         else
         {
             Vector2f uv1(0, 0);
-            Vector2f uv2(m_texture.lock()->get_size().x, m_texture.lock()->get_size().y);
+            Vector2f uv2 = m_texture.lock()->get_size();
 
-            Renderer2D::render_sprite(m_texture.lock(), m_owner->get_transform().get_translation(), 
-                                      m_owner->get_transform().get_scale(), Vector3f(1, 0, 0), 
-                                      uv1, uv2, m_owner->get_transform().get_rotation());
+            Renderer2D::render_sprite(m_texture.lock(), m_owner->get_transform().get_world_transform(), m_color, uv1, uv2);
         }
     }
     else
     {
-        Renderer2D::render_quad(m_owner->get_transform().get_translation(), m_owner->get_transform().get_scale(), 
-                                m_color, m_owner->get_transform().get_rotation());
+        Renderer2D::render_quad(m_owner->get_transform().get_world_transform(), m_color);
     }
 }
 

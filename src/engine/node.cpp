@@ -1,6 +1,8 @@
 #include "engine/node.h"
 #include "engine/component.h"
 
+#include <algorithm>
+
 Node::Node(const std::string& name, Node* parent, Scene* scene)
     : m_name(name), m_parent(parent), m_scene(scene), m_transform(this)
 {
@@ -84,4 +86,9 @@ void Node::on_update(float dt)
     {
         c->on_update(dt);
     }
+}
+
+void Node::remove_child(Node* child)
+{
+    m_children.erase(std::find(m_children.begin(), m_children.end(), child));
 }
