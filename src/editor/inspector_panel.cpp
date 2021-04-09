@@ -4,6 +4,9 @@
 #include "engine/node.h"
 #include "engine/sprite.h"
 #include "engine/camera.h"
+#include "engine/maths/vector2.h"
+#include "engine/texture.h"
+#include "engine/assets.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -119,9 +122,62 @@ void InspectorPanel::draw_components(Node* node)
         ImGui::Columns(1);
     }
 
-    draw_component<Sprite>(ICON_FK_PICTURE_O " Sprite", node, []
+    draw_component<Sprite>(ICON_FK_PICTURE_O " Sprite", node, [node]
     {
+        Sprite* sprite = node->get_component<Sprite>();
 
+        Vector2f uv1 = sprite->get_uv1();
+        Vector2f uv2 = sprite->get_uv2();
+
+        bool use_uvs = sprite->using_uvs();
+
+        ImGui::Columns(2);
+
+        ImGui::Text("Texture");
+        ImGui::NextColumn();
+
+        char buffer[128];
+        if (sprite->get_texture().lock())
+        {
+            strcpy(buffer, sprite->get_texture().lock()->get_path().c_str());
+        }
+        ImGui::InputText("##texture_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("texture_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                sprite->set_texture(AssetManager::get_instance()->get_texture(path)); // TODO: Shouldn't lock the weak ptr
+            }
+        }
+        
+        ImGui::NextColumn();
+
+        ImGui::Text("Use UVs");
+        ImGui::NextColumn();
+        ImGui::Checkbox("##use_uvs", &use_uvs);
+
+        ImGui::Columns(1);
+        ImGui::Text("UV Coordinates");
+        ImGui::Columns(2);
+        ImGui::Text("UV 1");
+        ImGui::NextColumn();
+        ImGui::InputFloat2("##uv1", &uv1.x);
+        ImGui::NextColumn();
+        ImGui::Text("UV 2");
+        ImGui::NextColumn();
+        ImGui::InputFloat2("##uv2", &uv2.x);
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+
+        sprite->set_uv1(uv1);
+        sprite->set_uv2(uv2);
+
+        sprite->use_uvs(use_uvs);
     });
 
     draw_component<Camera>(ICON_FK_VIDEO_CAMERA " Camera", node, [node]

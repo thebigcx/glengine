@@ -3,10 +3,9 @@
 #include "engine/assets.h"
 #include "engine/shader.h"
 #include "engine/camera.h"
+#include "engine/maths/quaternion.h"
 
 #include <glad/glad.h>
-
-
 
 void Renderer2D::init()
 {
@@ -22,7 +21,7 @@ void Renderer2D::init()
     glBindBuffer(GL_ARRAY_BUFFER, m_data.vbo);
     glBufferData(GL_ARRAY_BUFFER, MAX_VERTICES * sizeof(SpriteVertex), nullptr, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), reinterpret_cast<void*>(offsetof(SpriteVertex, pos)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), reinterpret_cast<void*>(offsetof(SpriteVertex, pos)));
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), reinterpret_cast<void*>(offsetof(SpriteVertex, uv)));
@@ -108,12 +107,12 @@ void Renderer2D::flush_batch()
     glDrawElements(GL_TRIANGLES, m_data.vertex_count * 6/4, GL_UNSIGNED_INT, 0);
 }
 
-void Renderer2D::render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color)
+void Renderer2D::render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector3f& rotation)
 {
-    render_sprite(m_data.textures[0], pos, size, color, Vector2f(0, 0), Vector2f(1, 1));
+    render_sprite(m_data.textures[0], pos, size, color, Vector2f(0, 0), Vector2f(1, 1), rotation);
 }
 
-void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2)
+void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2, const Vector3f& rotation)
 {
     float tex_index = 0.f;
 
@@ -156,25 +155,27 @@ void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Ve
         { co1.x, co2.y }
     };
 
-    m_data.vertex_ptr->pos = pos;
+    Quaternionf q(rotation);
+
+    m_data.vertex_ptr->pos = q * Vector3f(pos, 0);
     m_data.vertex_ptr->uv = uvs[0];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = { pos.x + size.x, pos.y };
+    m_data.vertex_ptr->pos = q * Vector3f(pos.x + size.x, pos.y, 0);
     m_data.vertex_ptr->uv = uvs[1];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = { pos.x + size.x, pos.y + size.y };
+    m_data.vertex_ptr->pos = q * Vector3f(pos.x + size.x, pos.y + size.y, 0);
     m_data.vertex_ptr->uv = uvs[2];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;
     m_data.vertex_ptr++;
 
-    m_data.vertex_ptr->pos = { pos.x, pos.y + size.y };
+    m_data.vertex_ptr->pos = q * Vector3f(pos.x, pos.y + size.y, 0);
     m_data.vertex_ptr->uv = uvs[3];
     m_data.vertex_ptr->color = color;
     m_data.vertex_ptr->index = tex_index;

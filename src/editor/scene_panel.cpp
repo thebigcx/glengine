@@ -25,14 +25,7 @@ void ScenePanel::render_node(Node* node)
     if (node->has_component<Sprite>())
         icon = ICON_FK_PICTURE_O;
     
-
-    if (ImGui::TreeNodeEx((icon + " " + node->get_name()).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth))
-    {
-        for (auto& child : node->get_children())
-            render_node(child);
-
-        ImGui::TreePop();
-    }
+    bool is_open = ImGui::TreeNodeEx((icon + " " + node->get_name()).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth);
 
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
     {
@@ -41,10 +34,8 @@ void ScenePanel::render_node(Node* node)
 
     if (ImGui::BeginPopupContextItem("node_context_menu"))
     {
-        if (ImGui::BeginMenu(ICON_FK_PLUS " Create Child"))
+        if (ImGui::MenuItem(ICON_FK_PLUS " Create Child"))
         {
-
-            ImGui::EndMenu();
             node->create_child("New Child");
         }
         if (ImGui::MenuItem(ICON_FK_TRASH " Delete"))
@@ -53,6 +44,14 @@ void ScenePanel::render_node(Node* node)
         }
 
         ImGui::EndPopup();
+    }
+
+    if (is_open)
+    {
+        for (auto& child : node->get_children())
+            render_node(child);
+
+        ImGui::TreePop();
     }
 
     ImGui::PopID();

@@ -41,7 +41,7 @@ public:
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            case 4: return w;
+            case 3: return w;
         }
 
         return x; // Never reaches
@@ -56,7 +56,7 @@ public:
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            case 4: return w;
+            case 3: return w;
         }
 
         return x; // Never reaches (make g++ -Wall happy)

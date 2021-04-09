@@ -33,7 +33,7 @@ void Editor::on_start()
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
     Camera::set_main_camera(camera);
-    node->get_transform().set_scale(Vector3f(100, 100, 1));
+    node->get_transform().set_scale(Vector3f(1, 1, 1));
 
     ImGuiLayer::init();
     ScenePanel::set_scene(m_current_scene);
@@ -78,6 +78,8 @@ void Editor::on_update(float dt)
     AssetsPanel::imgui_render();
 
     ImGui::Begin("Viewport");
+
+    m_camera.set_focus(ImGui::IsWindowFocused());
 
     ImVec2 size = ImGui::GetContentRegionAvail();
 

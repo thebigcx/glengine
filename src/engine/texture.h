@@ -18,6 +18,8 @@ public:
 
     uint32_t get_id() const { return m_id; }
 
+    const std::string& get_path() const { return m_path; }
+
 private:
     uint32_t m_id = 0;
 

@@ -202,7 +202,7 @@ Matrix<4, 4, T> Matrix<4, 4, T>::ortho(const T& left, const T& right, const T& b
 template<typename T>
 Matrix<4, 4, T> Matrix<4, 4, T>::perspective(const T& fovy, const T& aspect, const T& zNear, const T& zFar)
 {
-    Matrix<4, 4, T> result;
+    Matrix<4, 4, T> result(static_cast<T>(0));
 
     result[0][0] = static_cast<T>(1) / (aspect * std::tan(fovy / static_cast<T>(2)));
     result[1][1] = static_cast<T>(1) / std::tan(fovy / static_cast<T>(2));

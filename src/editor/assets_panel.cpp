@@ -53,6 +53,17 @@ void AssetsPanel::imgui_render()
                 ImGui::SetTooltip(asset.path().string().c_str());
             }
 
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("texture_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Image(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+                ImGui::SameLine();
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+
             ImGui::SameLine();
         }
     }

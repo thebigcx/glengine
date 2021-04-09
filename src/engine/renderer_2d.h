@@ -21,7 +21,7 @@ private:
 
     struct SpriteVertex
     {
-        Vector2f pos;
+        Vector3f pos;
         Vector2f uv;
         Vector3f color;
         float index;
@@ -52,9 +52,9 @@ public:
     static void flush_batch();
     static void finish_scene();
 
-    static void render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color);
+    static void render_quad(const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector3f& rotation);
 
-    static void render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2);
+    static void render_sprite(const std::shared_ptr<Texture>& texture, const Vector2f& pos, const Vector2f& size, const Vector3f& color, const Vector2f& uv1, const Vector2f& uv2, const Vector3f& rotation);
 
     static void render_string(const std::string& str);
 };

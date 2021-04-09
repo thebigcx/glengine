@@ -15,6 +15,8 @@ public:
 
     EventType get_type() const { return m_type; }
 
+    bool handled = false;
+
 private:
     EventType m_type;
 };
