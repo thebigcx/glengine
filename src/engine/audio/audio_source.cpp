@@ -1,4 +1,5 @@
 #include "engine/audio/audio.h"
+#include "engine/scene/node.h"
 
 #include <AL/al.h>
 
@@ -16,6 +17,12 @@ AudioSource::AudioSource(const std::shared_ptr<AudioBuffer>& buffer)
 void AudioSource::on_destroy()
 {
     alDeleteSources(1, &m_id);
+}
+
+void AudioSource::on_transform_change()
+{
+    Vector3f pos = m_owner->get_transform().get_world_transform()[3]; // get the translation component
+    alSourcefv(m_id, AL_POSITION, &pos.x);
 }
 
 void AudioSource::set_buffer(const std::shared_ptr<AudioBuffer>& buffer)

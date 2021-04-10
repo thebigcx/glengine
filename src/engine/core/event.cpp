@@ -11,3 +11,9 @@ WindowResizeEvent::WindowResizeEvent(uint32_t width, uint32_t height)
 {
 
 }
+
+KeyPressEvent::KeyPressEvent(Key key)
+    : Event(EventType::KeyPress), m_key(key)
+{
+
+}

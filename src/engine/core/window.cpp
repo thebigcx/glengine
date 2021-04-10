@@ -12,6 +12,13 @@ static void framebuffer_size_callback(GLFWwindow* window_handle, int width, int 
     app->on_event(event);
 }
 
+static void key_callback(GLFWwindow* window_handle, int key, int scancode, int action, int mods)
+{
+    Application* app = (Application*)glfwGetWindowUserPointer(window_handle);
+    KeyPressEvent event(static_cast<Key>(key));
+    app->on_event(event);
+}
+
 Window::Window(uint32_t width, uint32_t height, const std::string& title)
     : m_width(width), m_height(height), m_title(title)
 {
@@ -24,6 +31,7 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
     glfwSetWindowUserPointer(m_window_handle, Application::get_instance());
 
     glfwSetFramebufferSizeCallback(m_window_handle, framebuffer_size_callback);
+    glfwSetKeyCallback(m_window_handle, key_callback);
 
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     glViewport(0, 0, width, height);

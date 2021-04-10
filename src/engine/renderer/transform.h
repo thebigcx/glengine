@@ -19,6 +19,7 @@ public:
     const Vector3f& get_scale() const { return m_scale; }
 
     Matrix4f get_world_transform() const;
+    Matrix4f get_local_transform() const;
 
 private:
     Vector3f m_translation, m_rotation, m_scale;

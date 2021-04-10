@@ -50,3 +50,10 @@ Matrix4f Transform::get_world_transform() const
 
     return world * local;
 }
+
+Matrix4f Transform::get_local_transform() const
+{
+    return Matrix4f::translate(Matrix4f(1.0f), m_translation)
+         * Quaternionf::to_matrix4(Quaternionf(m_rotation))
+         * Matrix4f::scale(Matrix4f(1.0f), m_scale);
+}

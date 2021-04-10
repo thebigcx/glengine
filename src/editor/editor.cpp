@@ -16,6 +16,7 @@
 #include "editor/panels/assets_panel.h"
 
 #include "imgui/imgui.h"
+#include "editor/imguizmo/ImGuizmo.h"
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
 #include <glad/glad.h>
@@ -33,7 +34,6 @@ void Editor::on_start()
     auto node = m_current_scene->create_node("Test");
     node->create_child("Child");
     node->create_component<Sprite>();
-    node->create_component<LuaScript>("assets/script.lua");
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
     camera->on_transform_change();
@@ -116,6 +116,32 @@ void Editor::on_update(float dt)
     
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->get_color_texture()), size, ImVec2{0, 1}, ImVec2{1, 0});
 
+    // IMGUIZMO
+
+    if (ScenePanel::get_selected_node())
+    {
+        ImGuizmo::SetOrthographic(true);
+        ImGuizmo::SetDrawlist();
+
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+        const Matrix4f& view = m_camera.get_view_matrix();
+        const Matrix4f& projection = m_camera.get_projection_matrix();
+        Matrix4f transform = ScenePanel::get_selected_node()->get_transform().get_local_transform();
+
+        ImGuizmo::Manipulate(&view[0].x, &projection[0].x, (ImGuizmo::OPERATION)m_imguizmo_operation, ImGuizmo::LOCAL, &transform[0].x, nullptr);
+
+        if (ImGuizmo::IsUsing())
+        {
+            Vector3f translation, rotation, scale;
+            Matrix4f::decompose_transform(transform, translation, rotation, scale);
+
+            ScenePanel::get_selected_node()->get_transform().set_translation(translation);
+            ScenePanel::get_selected_node()->get_transform().set_rotation(rotation);
+            ScenePanel::get_selected_node()->get_transform().set_scale(scale);
+        }
+    }
+
     ImGui::End();
 
     ImGui::End();
@@ -132,6 +158,17 @@ void Editor::on_destroy()
 
 void Editor::on_event(Event& e)
 {
+    if (e.get_type() == EventType::KeyPress)
+    {
+        KeyPressEvent& ke = static_cast<KeyPressEvent&>(e);
+        if (ke.get_key() == Key::Q)
+            m_imguizmo_operation = ImGuizmo::OPERATION::TRANSLATE;
+        else if (ke.get_key() == Key::W)
+            m_imguizmo_operation = ImGuizmo::OPERATION::SCALE;
+        else if (ke.get_key() == Key::E)
+            m_imguizmo_operation = ImGuizmo::OPERATION::ROTATE;
+    }
+
     if (e.get_type() != EventType::WindowResize) // Viewport is different to window with ImGui
     {
         m_current_scene->on_event(e);

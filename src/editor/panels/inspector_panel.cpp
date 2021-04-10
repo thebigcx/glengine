@@ -65,7 +65,7 @@ void InspectorPanel::imgui_render()
         add_component<Camera>(node, ICON_FK_VIDEO_CAMERA " Camera");
         add_component<AudioSource>(node, ICON_FK_FILE_AUDIO_O " Audio Source");
         add_component<AudioListener>(node, ICON_FK_HEADPHONES " Audio Listener");
-        add_component<AudioListener>(node, ICON_FK_CODE " Script");
+        add_component<LuaScript>(node, ICON_FK_CODE " Script");
 
         ImGui::EndCombo();
     }

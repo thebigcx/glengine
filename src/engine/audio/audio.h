@@ -56,6 +56,7 @@ public:
     AudioSource(const std::shared_ptr<AudioBuffer>& buffer);
 
     void on_destroy() override;
+    void on_transform_change() override;
 
     void set_buffer(const std::shared_ptr<AudioBuffer>& buffer);
     const std::shared_ptr<AudioBuffer>& get_buffer() const { return m_buffer; }

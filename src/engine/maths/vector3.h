@@ -144,6 +144,9 @@ public:
     static Vector<3, T> normalize(const Vector<3, T>& v);
     static Vector<3, T> cross(const Vector<3, T>& a, const Vector<3, T>& b);
     static T dot(const Vector<3, T>& a, const Vector<3, T>& b);
+
+    static Vector<3, T> scale(const Vector<3, T>& v, const T& s);
+    static T length(const Vector<3, T>& v);
     
     T x, y, z;
 };
@@ -232,6 +235,18 @@ template<typename T>
 T Vector<3, T>::dot(const Vector<3, T>& a, const Vector<3, T>& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+template<typename T>
+Vector<3, T> Vector<3, T>::scale(const Vector<3, T>& v, const T& s)
+{
+    return v * s / Vector<3, T>::length(v);
+}
+
+template<typename T>
+T Vector<3, T>::length(const Vector<3, T>& v)
+{
+    return std::sqrt(Vector<3, T>::dot(v, v));
 }
 
 typedef Vector<3, float>        Vector3f;

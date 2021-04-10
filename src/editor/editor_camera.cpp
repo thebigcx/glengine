@@ -12,7 +12,7 @@ void EditorCamera::on_update(float dt)
 {
     if (m_has_focus)
     {
-        if (Mouse::is_mouse_pressed(MouseButton::Left))
+        if (Mouse::is_mouse_pressed(MouseButton::Right))
         {
             Vector2i mouse_current_position = Mouse::get_mouse_position();
 

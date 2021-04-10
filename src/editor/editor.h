@@ -30,4 +30,6 @@ private:
 
     bool m_is_playing = false;
     std::shared_ptr<Scene> m_scene_before_play;
+
+    int m_imguizmo_operation = 0;
 };

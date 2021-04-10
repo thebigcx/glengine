@@ -7,6 +7,7 @@
 #include "engine/maths/vector3.h"
 #include "engine/maths/vector4.h"
 #include "engine/maths/matrix.h"
+#include "engine/maths/epsilon.h"
 
 template<typename T>
 class Matrix<4, 4, T>
@@ -62,6 +63,8 @@ public:
     static Matrix<4, 4, T> perspective(const T& fovy, const T& aspect, const T& zNear, const T& zFar);
     static Matrix<4, 4, T> look_at(const Vector<3, T>& pos, const Vector<3, T>& object, const Vector<3, T>& up);
     static Matrix<4, 4, T> inverse(const Matrix<4, 4, T>& mat);
+
+    static void decompose_transform(const Matrix<4, 4, T>& transform, Vector<3, T>& translation, Vector<3, T>& rotation, Vector<3, T>& scale);
 
 private:
     Vector<4, T> m_cells[4];
@@ -298,6 +301,58 @@ Matrix<4, 4, T> Matrix<4, 4, T>::inverse(const Matrix<4, 4, T>& m)
     T OneOverDeterminant = static_cast<T>(1) / Dot1;
 
     return Inverse * OneOverDeterminant;
+}
+
+template<typename T>
+void Matrix<4, 4, T>::decompose_transform(const Matrix<4, 4, T>& transform, Vector<3, T>& translation, Vector<3, T>& rotation, Vector<3, T>& scale)
+{
+    Matrix<4, 4, T> local_matrix(transform);
+
+    if (epsilon_equal(local_matrix[3][3], static_cast<T>(0), epsilon<T>()))
+    {
+        return;
+    }
+
+    if (
+        epsilon_not_equal(local_matrix[0][3], static_cast<T>(0), epsilon<T>()) ||
+        epsilon_not_equal(local_matrix[1][3], static_cast<T>(0), epsilon<T>()) ||
+        epsilon_not_equal(local_matrix[2][3], static_cast<T>(0), epsilon<T>())
+    )
+    {
+        local_matrix[0][3] = local_matrix[1][3] = local_matrix[2][3] = static_cast<T>(0);
+        local_matrix[3][3] = static_cast<T>(1);
+    }
+
+    translation = Vector<3, T>(local_matrix[3]);
+    local_matrix[3] = Vector<4, T>(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), local_matrix[3].w);
+
+    Vector<3, T> row[3];
+
+    for (unsigned int x = 0; x < 3; x++)
+    for (unsigned int y = 0; y < 3; y++)
+    {
+        row[x][y] = local_matrix[x][y];
+    }
+
+    scale.x = Vector<3, T>::length(row[0]);
+    row[0] = Vector<3, T>::scale(row[0], static_cast<T>(1));
+    scale.y = Vector<3, T>::length(row[1]);
+    row[1] = Vector<3, T>::scale(row[1], static_cast<T>(1));
+    scale.z = Vector<3, T>::length(row[2]);
+    row[2] = Vector<3, T>::scale(row[2], static_cast<T>(1));
+
+    rotation.y = std::asin(-row[0][2]);
+    if (std::cos(rotation.y) != 0)
+    {
+        rotation.x = std::atan2(row[1][2], row[2][2]);
+        rotation.z = std::atan2(row[0][1], row[0][0]);
+    }
+    else
+    {
+        rotation.x = std::atan2(-row[2][0], row[1][1]);
+        rotation.z = static_cast<T>(0);
+    }
+    
 }
 
 typedef Matrix<4, 4, float>        Matrix4f;

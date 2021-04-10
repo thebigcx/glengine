@@ -31,7 +31,7 @@ project "editor"
     objdir "obj/%{cfg.buildcfg}/editor"
 
     includedirs {
-        "src", "src/editor/", "src/engine"
+        "src", "src/editor/", "src/engine", "src/editor/imgui"
     }
 
     libdirs {

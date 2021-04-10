@@ -2,9 +2,11 @@
 
 #include <cstdint>
 
+#include "engine/core/keyboard.h"
+
 enum class EventType
 {
-    WindowResize
+    WindowResize, KeyPress
 };
 
 class Event
@@ -31,4 +33,15 @@ public:
 
 private:
     uint32_t m_width, m_height;
+};
+
+class KeyPressEvent : public Event
+{
+public:
+    KeyPressEvent(Key key);
+
+    Key get_key() const { return m_key; }
+
+private:
+    Key m_key;
 };
