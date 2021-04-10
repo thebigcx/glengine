@@ -1,5 +1,5 @@
-#include "engine/node.h"
-#include "engine/component.h"
+#include "engine/scene/node.h"
+#include "engine/scene/component.h"
 
 #include <algorithm>
 

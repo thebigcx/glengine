@@ -1,5 +1,5 @@
-#include "engine/transform.h"
-#include "engine/node.h"
+#include "engine/renderer/transform.h"
+#include "engine/scene/node.h"
 #include "engine/maths/quaternion.h"
 
 Transform::Transform(Node* owner)

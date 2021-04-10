@@ -1,7 +1,7 @@
-#include "engine/window.h"
+#include "engine/core/window.h"
 #include "engine/glad/glad.h"
-#include "engine/application.h"
-#include "engine/event.h"
+#include "engine/core/application.h"
+#include "engine/core/event.h"
 
 #include <GLFW/glfw3.h>
 

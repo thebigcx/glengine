@@ -1,5 +1,5 @@
-#include "engine/mouse.h"
-#include "engine/application.h"
+#include "engine/core/mouse.h"
+#include "engine/core/application.h"
 
 #include <GLFW/glfw3.h>
 

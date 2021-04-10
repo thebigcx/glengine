@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "engine/component.h"
+#include "engine/scene/component.h"
 #include "engine/maths/vector2.h"
 #include "engine/maths/vector3.h"
 

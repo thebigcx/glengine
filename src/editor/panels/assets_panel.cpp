@@ -1,7 +1,7 @@
-#include "editor/assets_panel.h"
+#include "editor/panels/assets_panel.h"
 #include "editor/imgui_layer.h"
-#include "engine/assets.h"
-#include "engine/texture.h"
+#include "engine/renderer/assets.h"
+#include "engine/renderer/texture.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 

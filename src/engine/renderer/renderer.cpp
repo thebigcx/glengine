@@ -1,5 +1,5 @@
-#include "engine/renderer.h"
-#include "engine/renderer_2d.h"
+#include "engine/renderer/renderer.h"
+#include "engine/renderer/renderer_2d.h"
 
 #include <iostream>
 #include <glad/glad.h>

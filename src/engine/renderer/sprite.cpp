@@ -1,7 +1,7 @@
-#include "engine/sprite.h"
-#include "engine/renderer_2d.h"
-#include "engine/node.h"
-#include "engine/texture.h"
+#include "engine/renderer/sprite.h"
+#include "engine/renderer/renderer_2d.h"
+#include "engine/scene/node.h"
+#include "engine/renderer/texture.h"
 
 void Sprite::on_render()
 {

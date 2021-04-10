@@ -1,4 +1,4 @@
-#include "engine/texture.h"
+#include "engine/renderer/texture.h"
 #include "engine/stb_image/stb_image.h"
 
 #include <glad/glad.h>

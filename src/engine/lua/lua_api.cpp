@@ -1,11 +1,11 @@
-#include "engine/lua_api.h"
-#include "engine/lua_script.h"
-#include "engine/lua.h"
-#include "engine/node.h"
-#include "engine/mouse.h"
-#include "engine/keyboard.h"
-#include "engine/camera.h"
-#include "engine/scene.h"
+#include "engine/lua/lua_api.h"
+#include "engine/lua/lua_script.h"
+#include "engine/lua/lua.h"
+#include "engine/scene/node.h"
+#include "engine/core/mouse.h"
+#include "engine/core/keyboard.h"
+#include "engine/renderer/camera.h"
+#include "engine/scene/scene.h"
 
 #include <iostream>
 

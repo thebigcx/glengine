@@ -1,7 +1,7 @@
-#include "engine/scene.h"
-#include "engine/node.h"
-#include "engine/renderer_2d.h"
-#include "engine/camera.h"
+#include "engine/scene/scene.h"
+#include "engine/scene/node.h"
+#include "engine/renderer/renderer_2d.h"
+#include "engine/renderer/camera.h"
 #include "editor/editor_camera.h"
 
 #include <algorithm>

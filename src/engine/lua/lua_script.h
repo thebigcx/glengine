@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "engine/component.h"
+#include "engine/scene/component.h"
 
 struct lua_State;
 

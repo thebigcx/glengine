@@ -2,9 +2,8 @@
 
 #include <memory>
 
-#include "engine/window.h"
+#include "engine/core/window.h"
 
-class Window;
 class Event;
 
 class Application

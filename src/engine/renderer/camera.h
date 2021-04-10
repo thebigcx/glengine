@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/component.h"
+#include "engine/scene/component.h"
 #include "engine/maths/matrix4.h"
 
 enum class CameraProjection

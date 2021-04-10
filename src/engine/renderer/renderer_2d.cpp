@@ -1,8 +1,8 @@
-#include "engine/renderer_2d.h"
-#include "engine/texture.h"
-#include "engine/assets.h"
-#include "engine/shader.h"
-#include "engine/camera.h"
+#include "engine/renderer/renderer_2d.h"
+#include "engine/renderer/texture.h"
+#include "engine/renderer/assets.h"
+#include "engine/renderer/shader.h"
+#include "engine/renderer/camera.h"
 #include "engine/maths/quaternion.h"
 
 #include <glad/glad.h>

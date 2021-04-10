@@ -1,6 +1,6 @@
-#include "engine/assets.h"
-#include "engine/texture.h"
-#include "engine/shader.h"
+#include "engine/renderer/assets.h"
+#include "engine/renderer/texture.h"
+#include "engine/renderer/shader.h"
 
 void AssetManager::flush()
 {

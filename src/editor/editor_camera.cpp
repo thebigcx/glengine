@@ -1,7 +1,7 @@
 #include "editor/editor_camera.h"
 #include "engine/maths/math.h"
-#include "engine/keyboard.h"
-#include "engine/mouse.h"
+#include "engine/core/keyboard.h"
+#include "engine/core/mouse.h"
 
 EditorCamera::EditorCamera()
 {

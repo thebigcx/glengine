@@ -1,8 +1,8 @@
-#include "engine/lua_script.h"
-#include "engine/mouse.h"
-#include "engine/keyboard.h"
-#include "engine/lua.h"
-#include "engine/lua_api.h"
+#include "engine/lua/lua_script.h"
+#include "engine/core/mouse.h"
+#include "engine/core/keyboard.h"
+#include "engine/lua/lua.h"
+#include "engine/lua/lua_api.h"
 
 #include <iostream>
 #include <algorithm>

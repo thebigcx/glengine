@@ -1,8 +1,8 @@
-#include "editor/scene_panel.h"
-#include "engine/scene.h"
-#include "engine/node.h"
-#include "engine/sprite.h"
-#include "engine/camera.h"
+#include "editor/panels/scene_panel.h"
+#include "engine/scene/scene.h"
+#include "engine/scene/node.h"
+#include "engine/renderer/sprite.h"
+#include "engine/renderer/camera.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 

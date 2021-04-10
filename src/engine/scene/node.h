@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <typeindex>
 
-#include "engine/transform.h"
-#include "engine/component.h"
+#include "engine/renderer/transform.h"
+#include "engine/scene/component.h"
 
 class Scene;
 class Event;

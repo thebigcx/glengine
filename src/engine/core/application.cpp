@@ -1,6 +1,6 @@
-#include "engine/application.h"
-#include "engine/renderer.h"
-#include "engine/event.h"
+#include "engine/core/application.h"
+#include "engine/renderer/renderer.h"
+#include "engine/core/event.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
