@@ -22,6 +22,8 @@ public:
 
     lua_State* get_lua_state() const { return m_lua; }
 
+    const std::string& get_path() const { return m_path; }
+
     static inline std::vector<LuaScript*> scripts;
 
 private:

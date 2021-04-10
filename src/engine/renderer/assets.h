@@ -47,6 +47,7 @@ private:
 
 class Texture;
 class Shader;
+class AudioBuffer;
 
 class AssetManager
 {
@@ -61,8 +62,10 @@ public:
 
     std::weak_ptr<Texture> get_texture(const std::string& path);
     std::weak_ptr<Shader> get_shader(const std::string& vs, const std::string& fs);
+    std::weak_ptr<AudioBuffer> get_audio_buffer(const std::string& path);
 
 private:
     AssetCache<Texture> m_textures;
     AssetCache<Shader> m_shaders;
+    AssetCache<AudioBuffer> m_audio_buffers;
 };

@@ -1,6 +1,7 @@
 #include "engine/core/application.h"
 #include "engine/renderer/renderer.h"
 #include "engine/core/event.h"
+#include "engine/audio/audio.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -14,6 +15,7 @@ void Application::run()
 {
     m_window = std::make_unique<Window>(1920, 1080, "Application");
     Renderer::init();
+    Audio::init();
 
     on_start();
 
@@ -37,4 +39,6 @@ void Application::run()
     }
 
     on_destroy();
+
+    Audio::finalize();
 }

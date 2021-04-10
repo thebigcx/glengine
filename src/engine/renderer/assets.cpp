@@ -1,6 +1,7 @@
 #include "engine/renderer/assets.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
+#include "engine/audio/audio.h"
 
 void AssetManager::flush()
 {
@@ -30,4 +31,16 @@ std::weak_ptr<Shader> AssetManager::get_shader(const std::string& vs, const std:
     std::shared_ptr<Shader> shader = std::make_shared<Shader>(vs, fs);
     m_shaders.add(vs, shader);
     return shader;
+}
+
+std::weak_ptr<AudioBuffer> AssetManager::get_audio_buffer(const std::string& path)
+{
+    if (m_audio_buffers.exists(path))
+    {
+        return m_audio_buffers.get(path);
+    }
+
+    std::shared_ptr<AudioBuffer> audio_buffer = AudioBuffer::load(path);
+    m_audio_buffers.add(path, audio_buffer);
+    return audio_buffer;
 }

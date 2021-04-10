@@ -3,6 +3,7 @@
 #include "engine/scene/node.h"
 #include "engine/renderer/sprite.h"
 #include "engine/renderer/camera.h"
+#include "engine/audio/audio.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -105,6 +106,12 @@ void ScenePanel::imgui_render()
             {
                 auto object = m_scene_context.lock()->create_node("Sprite");
                 object->create_component<Sprite>();
+                m_selected_node = object;
+            }
+            if (ImGui::MenuItem(ICON_FK_PICTURE_O " Audio Source"))
+            {
+                auto object = m_scene_context.lock()->create_node("Audio Source");
+                object->create_component<AudioSource>();
                 m_selected_node = object;
             }
 

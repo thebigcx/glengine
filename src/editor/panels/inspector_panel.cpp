@@ -7,6 +7,8 @@
 #include "engine/maths/vector2.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/assets.h"
+#include "engine/audio/audio.h"
+#include "engine/lua/lua_script.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -59,7 +61,11 @@ void InspectorPanel::imgui_render()
 
     if (ImGui::BeginCombo("##add_component", ICON_FK_PLUS " Add Component", ImGuiComboFlags_NoArrowButton))
     {
-        add_component<Sprite>(node, "Sprite");
+        add_component<Sprite>(node, ICON_FK_PICTURE_O " Sprite");
+        add_component<Camera>(node, ICON_FK_VIDEO_CAMERA " Camera");
+        add_component<AudioSource>(node, ICON_FK_FILE_AUDIO_O " Audio Source");
+        add_component<AudioListener>(node, ICON_FK_HEADPHONES " Audio Listener");
+        add_component<AudioListener>(node, ICON_FK_CODE " Script");
 
         ImGui::EndCombo();
     }
@@ -259,5 +265,67 @@ void InspectorPanel::draw_components(Node* node)
         }
 
         ImGui::Columns(1);
+    });
+
+    draw_component<LuaScript>(ICON_FK_CODE " Script", node, [node]
+    {
+        ImGui::Columns(2);
+
+        ImGui::Text("Path");
+        ImGui::NextColumn();
+
+        char buffer[128];
+        strcpy(buffer, node->get_component<LuaScript>()->get_path().c_str());
+
+        ImGui::InputText("##script_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("script_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                node->get_component<LuaScript>()->load_script(path);
+            }
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+    });
+
+    draw_component<AudioSource>(ICON_FK_FILE_AUDIO_O " Audio Source", node, [node]
+    {
+        ImGui::Columns(2);
+
+        ImGui::Text("Path");
+        ImGui::NextColumn();
+
+        char buffer[128];
+        if (buffer, node->get_component<AudioSource>()->get_buffer())
+            strcpy(buffer, node->get_component<AudioSource>()->get_buffer()->get_path().c_str());
+
+        ImGui::InputText("##audio_source_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("audio_buffer_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                node->get_component<AudioSource>()->set_buffer(AssetManager::get_instance()->get_audio_buffer(path).lock());
+            }
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+    });
+
+    draw_component<AudioListener>(ICON_FK_HEADPHONES " Audio Listener", node, [node]
+    {
+
     });
 }

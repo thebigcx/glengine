@@ -46,7 +46,8 @@ project "editor"
         "engine",
         "glfw",
         "dl",
-        "lua"
+        "lua",
+        "openal"
     }
 
     filter "configurations:debug"

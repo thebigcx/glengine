@@ -9,6 +9,7 @@
 #include "engine/renderer/texture.h"
 #include "engine/renderer/framebuffer.h"
 #include "engine/lua/lua_script.h"
+#include "engine/audio/audio.h"
 
 #include "editor/panels/scene_panel.h"
 #include "editor/panels/inspector_panel.h"
@@ -125,6 +126,7 @@ void Editor::on_update(float dt)
 
 void Editor::on_destroy()
 {
+    m_current_scene->on_destroy();
     ImGuiLayer::destroy();
 }
 
