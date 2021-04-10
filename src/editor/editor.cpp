@@ -8,12 +8,14 @@
 #include "engine/event.h"
 #include "engine/texture.h"
 #include "engine/framebuffer.h"
+#include "engine/lua_script.h"
 
 #include "editor/scene_panel.h"
 #include "editor/inspector_panel.h"
 #include "editor/assets_panel.h"
 
 #include "imgui/imgui.h"
+#include "editor/fork_awesome/fork_awesome_icons.h"
 
 #include <glad/glad.h>
 
@@ -30,8 +32,10 @@ void Editor::on_start()
     auto node = m_current_scene->create_node("Test");
     node->create_child("Child");
     node->create_component<Sprite>();
+    node->create_component<LuaScript>("assets/script.lua");
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
+    camera->on_transform_change();
     Camera::set_main_camera(camera);
     node->get_transform().set_scale(Vector3f(1, 1, 1));
 
@@ -49,11 +53,19 @@ void Editor::on_update(float dt)
 {
     m_camera.on_update(dt);
 
-    m_current_scene->on_update(dt);
+    if (m_is_playing)
+        m_current_scene->on_update(dt);
+    else
+        m_current_scene->on_editor_update(dt);
 
     m_framebuffer->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_current_scene->on_editor_render(m_camera);
+
+    if (m_is_playing)
+        m_current_scene->on_render();
+    else
+        m_current_scene->on_editor_render(m_camera);
+
     m_framebuffer->unbind();
 
 
@@ -76,6 +88,15 @@ void Editor::on_update(float dt)
     ScenePanel::imgui_render();
     InspectorPanel::imgui_render();
     AssetsPanel::imgui_render();
+
+    ImGui::Begin("ScenePlay");
+    if (ImGui::Button(ICON_FK_PLAY))
+    {
+        m_is_playing = !m_is_playing;
+        if (m_is_playing)
+            m_current_scene->on_start();
+    }
+    ImGui::End();
 
     ImGui::Begin("Viewport");
 

@@ -45,7 +45,8 @@ project "editor"
     links {
         "engine",
         "glfw",
-        "dl"
+        "dl",
+        "lua"
     }
 
     filter "configurations:debug"

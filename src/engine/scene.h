@@ -13,9 +13,12 @@ class Scene
 public:
     Scene();
 
+    void on_start();
     void on_render();
     void on_editor_render(const EditorCamera& camera);
     void on_update(float dt);
+    void on_editor_update(float dt);
+    void on_destroy();
 
     Node* create_node(const std::string& name);
     void remove_node(Node* node);

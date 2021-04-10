@@ -92,3 +92,27 @@ void Node::remove_child(Node* child)
 {
     m_children.erase(std::find(m_children.begin(), m_children.end(), child));
 }
+
+void Node::on_start()
+{
+    if (!m_enabled)
+        return;
+
+    for (auto& c : m_components)
+        c.second->on_start();
+
+    for (auto& c : m_children)
+        c->on_start();
+}
+
+void Node::on_destroy()
+{
+    if (!m_enabled)
+        return;
+
+    for (auto& c : m_components)
+        c.second->on_destroy();
+
+    for (auto& c : m_children)
+        c->on_destroy();
+}

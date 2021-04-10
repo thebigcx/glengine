@@ -14,7 +14,7 @@ class Camera : public Component
 private:
     struct OrthoData
     {
-        float size = 1000, near_clip = -1, far_clip = 1;
+        float size = 10.0f, near_clip = -1, far_clip = 1;
     };
 
     struct PerspectiveData

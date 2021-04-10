@@ -27,4 +27,7 @@ private:
     EditorCamera m_camera;
 
     Vector2u m_viewport_size; // To test changes of framebuffer size
+
+    bool m_is_playing = false;
+    std::shared_ptr<Scene> m_scene_before_play;
 };

@@ -65,9 +65,11 @@ public:
         m_components.erase(typeid(T));
     }
 
+    void on_start();
     void on_render();
     void on_update(float dt);
     void on_event(Event& e);
+    void on_destroy();
 
     void set_name(const std::string& name) { m_name = name; }
 

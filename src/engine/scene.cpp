@@ -46,6 +46,14 @@ void Scene::on_update(float dt)
     }
 }
 
+void Scene::on_editor_update(float dt)
+{
+    /*for (auto& node : m_nodes)
+    {
+        node->on_update(dt);
+    }*/
+}
+
 Node* Scene::create_node(const std::string& name)
 {
     Node* node = new Node(name, nullptr, this);
@@ -63,5 +71,21 @@ void Scene::on_event(Event& e)
     for (auto& node : m_nodes)
     {
         node->on_event(e);
+    }
+}
+
+void Scene::on_start()
+{
+    for (auto& node : m_nodes)
+    {
+        node->on_start();
+    }
+}
+
+void Scene::on_destroy()
+{
+    for (auto& node : m_nodes)
+    {
+        node->on_destroy();
     }
 }
