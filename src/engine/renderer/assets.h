@@ -41,7 +41,7 @@ public:
         m_assets.clear();
     }
 
-    const std::unordered_map<std::string, std::shared_ptr<T>>& get_internal_list() const { return m_assets; }
+    std::unordered_map<std::string, std::shared_ptr<T>>& get_internal_list() { return m_assets; }
 
 private:
     std::unordered_map<std::string, std::shared_ptr<T>> m_assets;
@@ -63,7 +63,7 @@ public:
 
     void flush();
 
-    const AssetCache<Material>& get_material_cache() const { return m_materials; }
+    AssetCache<Material>& get_material_cache() { return m_materials; }
 
     std::weak_ptr<Texture> get_texture(const std::string& path);
     std::weak_ptr<Shader> get_shader(const std::string& path);

@@ -17,33 +17,13 @@
 
 #include "imgui/imgui.h"
 
-template<typename T>
-void InspectorPanel::add_component(Node* node, const std::string& name)
+void InspectorPanel::render_node_inspector()
 {
-    if (!node->has_component<T>())
-    {
-        if (ImGui::Selectable(name.c_str()))
-        {
-            node->create_component<T>();
-        }
-    }
-}
-
-void InspectorPanel::set_scene(const std::shared_ptr<Scene>& scene)
-{
-    m_scene_context = scene;
-}
-
-void InspectorPanel::imgui_render()
-{
-    ImGui::Begin(ICON_FK_CUBE " Inspector");
-    
-    Node* node = ScenePanel::get_selected_node();
+    Node* node = node_selection;
     
     if (!node)
     {
         ImGui::Text("No game object selected");
-        ImGui::End();
         return;
     }
 
@@ -74,6 +54,79 @@ void InspectorPanel::imgui_render()
 
         ImGui::EndCombo();
     }
+}
+
+void InspectorPanel::render_material_inspector()
+{
+    std::weak_ptr<Material> material = AssetManager::get_instance()->get_material(material_selection);
+
+    char buffer[128];
+    strcpy(buffer, material.lock()->get_name().c_str());
+    if (ImGui::InputText("##change_node_name", buffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        auto& list = AssetManager::get_instance()->get_material_cache().get_internal_list();
+
+        std::shared_ptr<Material> old_mat = material.lock(); // Prevent from deleting
+        list.erase(material.lock()->get_name());
+        list.insert({ buffer, old_mat });
+
+        material.lock()->set_name(std::string(buffer));
+        material_selection = buffer;
+    }
+
+    if (ImGui::CollapsingHeader("Albedo"))
+    {
+        if (material.lock()->get_albedo().lock())
+            ImGui::Image(reinterpret_cast<void*>(material.lock()->get_albedo().lock()->get_id()), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        else
+            ImGui::Image(0, ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+        ImGui::SameLine();
+
+        char buffer[128];
+        if (material.lock()->get_albedo().lock())
+            strcpy(buffer, material.lock()->get_albedo().lock()->get_path().c_str());
+        
+        ImGui::InputText("##texture_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("texture_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                material.lock()->set_albedo(AssetManager::get_instance()->get_texture(path));
+            }
+        }
+    }
+}
+
+template<typename T>
+void InspectorPanel::add_component(Node* node, const std::string& name)
+{
+    if (!node->has_component<T>())
+    {
+        if (ImGui::Selectable(name.c_str()))
+        {
+            node->create_component<T>();
+        }
+    }
+}
+
+void InspectorPanel::set_scene(const std::shared_ptr<Scene>& scene)
+{
+    m_scene_context = scene;
+}
+
+void InspectorPanel::imgui_render()
+{
+    ImGui::Begin(ICON_FK_CUBE " Inspector");
+    
+    if (selection_type == SelectionType::Node)
+        render_node_inspector();
+    else if (selection_type == SelectionType::Material)
+        render_material_inspector();
 
     ImGui::End();
 }

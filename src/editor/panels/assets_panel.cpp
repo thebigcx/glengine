@@ -3,6 +3,7 @@
 #include "engine/renderer/assets.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/material.h"
+#include "editor/panels/inspector_panel.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -120,7 +121,11 @@ void MaterialView::imgui_render()
 {
     for (auto& material : AssetManager::get_instance()->get_material_cache().get_internal_list())
     {
-        ImGui::Text(material.second->get_name().c_str());
+        if (ImGui::Button(material.second->get_name().c_str()))
+        {
+            InspectorPanel::selection_type = SelectionType::Material;
+            InspectorPanel::material_selection = material.first;
+        }
 
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip(material.second->get_name().c_str());

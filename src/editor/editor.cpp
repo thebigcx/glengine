@@ -132,7 +132,7 @@ void Editor::on_update(float dt)
 
     // IMGUIZMO
 
-    if (ScenePanel::get_selected_node())
+    if (InspectorPanel::selection_type == SelectionType::Node && InspectorPanel::node_selection)
     {
         ImGuizmo::SetOrthographic(true);
         ImGuizmo::SetDrawlist();
@@ -141,7 +141,7 @@ void Editor::on_update(float dt)
 
         const Matrix4f& view = m_camera.get_view_matrix();
         const Matrix4f& projection = m_camera.get_projection_matrix();
-        Matrix4f transform = ScenePanel::get_selected_node()->get_transform().get_local_transform();
+        Matrix4f transform = InspectorPanel::node_selection->get_transform().get_local_transform();
 
         ImGuizmo::Manipulate(&view[0].x, &projection[0].x, (ImGuizmo::OPERATION)m_imguizmo_operation, ImGuizmo::LOCAL, &transform[0].x, nullptr);
 
@@ -150,9 +150,9 @@ void Editor::on_update(float dt)
             Vector3f translation, rotation, scale;
             Matrix4f::decompose_transform(transform, translation, rotation, scale);
 
-            ScenePanel::get_selected_node()->get_transform().set_translation(translation);
-            ScenePanel::get_selected_node()->get_transform().set_rotation(rotation);
-            ScenePanel::get_selected_node()->get_transform().set_scale(scale);
+            InspectorPanel::node_selection->get_transform().set_translation(translation);
+            InspectorPanel::node_selection->get_transform().set_rotation(rotation);
+            InspectorPanel::node_selection->get_transform().set_scale(scale);
         }
     }
 

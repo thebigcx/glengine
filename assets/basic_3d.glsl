@@ -38,4 +38,6 @@ layout (binding = 0) uniform sampler2D u_albedo;
 void main()
 {
     frag_color = texture(u_albedo, uv);
+    if (frag_color.a < 0.1)
+        discard;
 }
