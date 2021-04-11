@@ -16,7 +16,8 @@ out float tex_index;
 void main()
 {
     gl_Position = u_projection * u_view * u_transform * vec4(a_pos, 1.0);
-    uv = a_uv;
-    color = a_color;
+    
+    uv        = a_uv;
+    color     = a_color;
     tex_index = a_tex_index;
 }

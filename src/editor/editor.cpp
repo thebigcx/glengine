@@ -8,6 +8,10 @@
 #include "engine/core/event.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/framebuffer.h"
+#include "engine/renderer/mesh.h"
+#include "engine/renderer/mesh_renderer.h"
+#include "engine/renderer/material.h"
+#include "engine/renderer/assets.h"
 #include "engine/lua/lua_script.h"
 #include "engine/audio/audio.h"
 
@@ -35,6 +39,15 @@ void Editor::on_start()
     node->create_child("Child");
     node->create_component<Sprite>();
     node->create_component<LuaScript>("assets/script.lua");
+    node->create_component<Mesh>();
+
+    auto mrender = node->create_component<MeshRenderer>();
+    auto material = std::make_shared<Material>();
+    material->set_albedo(AssetManager::get_instance()->get_texture("assets/texture_test.png"));
+    material->set_shader(AssetManager::get_instance()->get_shader("assets/basic_3d.vert", "assets/basic_3d.frag"));
+    mrender->set_material(material);
+
+    node->get_component<Mesh>()->load("assets/test.fbx");
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
     camera->on_transform_change();

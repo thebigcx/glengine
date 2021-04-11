@@ -62,6 +62,8 @@ public:
         if (!has_component<T>())
             return;
 
+        m_components[typeid(T)]->on_destroy();
+        delete m_components[typeid(T)];
         m_components.erase(typeid(T));
     }
 

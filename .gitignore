@@ -4,3 +4,10 @@ obj
 Makefile
 premake5
 .vscode
+
+# Large asset files
+*.fbx
+*.obj
+*.png
+*.jpg
+*.jpeg

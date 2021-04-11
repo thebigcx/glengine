@@ -15,6 +15,10 @@ Node::~Node()
     {
         delete child;
     }
+    for (auto& c : m_components)
+    {
+        delete c.second;
+    }
 }
 
 Node* Node::create_child(const std::string& name)

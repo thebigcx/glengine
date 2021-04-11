@@ -29,6 +29,12 @@ public:
     void imgui_render(const std::filesystem::directory_entry& asset) override;
 };
 
+class ModelView : public AssetView
+{
+public:
+    void imgui_render(const std::filesystem::directory_entry& asset) override;
+};
+
 class AssetsPanel
 {
 public:

@@ -7,6 +7,7 @@
 #include "engine/maths/vector2.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/assets.h"
+#include "engine/renderer/mesh.h"
 #include "engine/audio/audio.h"
 #include "engine/lua/lua_script.h"
 
@@ -66,6 +67,7 @@ void InspectorPanel::imgui_render()
         add_component<AudioSource>(node, ICON_FK_FILE_AUDIO_O " Audio Source");
         add_component<AudioListener>(node, ICON_FK_HEADPHONES " Audio Listener");
         add_component<LuaScript>(node, ICON_FK_CODE " Script");
+        add_component<Mesh>(node, ICON_FK_CUBE " Mesh");
 
         ImGui::EndCombo();
     }
@@ -353,5 +355,33 @@ void InspectorPanel::draw_components(Node* node)
 
         if (main)
             AudioListener::set_main(*node->get_component<AudioListener>());
+    });
+
+    draw_component<Mesh>(ICON_FK_CUBE " Mesh", node, [node]
+    {
+        ImGui::Columns(2);
+
+        ImGui::Text("Path");
+        ImGui::NextColumn();
+
+        char buffer[128];
+        strcpy(buffer, node->get_component<Mesh>()->get_path().c_str());
+
+        ImGui::InputText("##audio_source_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("model_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                node->get_component<Mesh>()->load(path);
+            }
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
     });
 }

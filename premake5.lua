@@ -47,7 +47,8 @@ project "editor"
         "glfw",
         "dl",
         "lua",
-        "openal"
+        "openal",
+        "assimp"
     }
 
     filter "configurations:debug"

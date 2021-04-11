@@ -93,6 +93,34 @@ void ScriptView::imgui_render(const std::filesystem::directory_entry& asset)
     }
 }
 
+void ModelView::imgui_render(const std::filesystem::directory_entry& asset)
+{
+    auto ext = asset.path().extension();
+
+    if (ext == ".fbx")
+    {
+        ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip(asset.path().string().c_str());
+        }
+
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+        {
+            ImGui::SetDragDropPayload("model_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+            ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+            ImGui::SameLine();
+            ImGui::Text(asset.path().c_str());
+
+            ImGui::EndDragDropSource();
+        }
+
+        ImGui::SameLine();
+    }
+}
+
 void AssetsPanel::imgui_render()
 {
     if (!m_asset_view)
@@ -109,7 +137,9 @@ void AssetsPanel::imgui_render()
     if (ImGui::Button(ICON_FK_FILE_AUDIO_O " Audio Clips", ImVec2(200, 0)))
         m_asset_view = new AudioView();
 
-    ImGui::Button(ICON_FK_CUBE " Meshes", ImVec2(200, 0));
+    if (ImGui::Button(ICON_FK_CUBE " 3D Models", ImVec2(200, 0)))
+        m_asset_view = new ModelView();
+        
     ImGui::Button(ICON_FK_CIRCLE " Materials", ImVec2(200, 0));
     ImGui::Button(ICON_FK_EYE " Shaders", ImVec2(200, 0));
 

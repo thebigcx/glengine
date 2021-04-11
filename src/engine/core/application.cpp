@@ -30,7 +30,7 @@ void Application::run()
         {
             m_is_running = false;
         }
-
+        
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         on_update(1);

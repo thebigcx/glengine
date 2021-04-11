@@ -1,5 +1,6 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer_2d.h"
+#include "engine/renderer/renderer_3d.h"
 
 #include <iostream>
 #include <glad/glad.h>
@@ -26,4 +27,5 @@ void Renderer::init()
     glDebugMessageCallback(message_callback, 0);
 
     Renderer2D::init();
+    Renderer3D::init();
 }

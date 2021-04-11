@@ -46,5 +46,9 @@ void Framebuffer::recreate()
     glTextureStorage2D(m_color_id, 1, GL_RGB8, m_width, m_height);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_id, 0);
 
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_depth_id);
+    glTextureStorage2D(m_depth_id, 1, GL_DEPTH24_STENCIL8, m_width, m_height);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_id, 0);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

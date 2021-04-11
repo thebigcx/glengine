@@ -1,6 +1,7 @@
 #include "engine/scene/scene.h"
 #include "engine/scene/node.h"
 #include "engine/renderer/renderer_2d.h"
+#include "engine/renderer/renderer_3d.h"
 #include "engine/renderer/camera.h"
 #include "editor/editor_camera.h"
 
@@ -22,18 +23,22 @@ void Scene::on_render()
         return;
 
     Renderer2D::start_scene(Camera::main_camera->get_view_matrix(), Camera::main_camera->get_projection_matrix());
+    Renderer3D::start_scene(Camera::main_camera->get_view_matrix(), Camera::main_camera->get_projection_matrix());
     
     m_root_node->on_render();
 
+    Renderer3D::end_scene();
     Renderer2D::flush_batch();
 }
 
 void Scene::on_editor_render(const EditorCamera& camera)
 {
     Renderer2D::start_scene(camera.get_view_matrix(), camera.get_projection_matrix());
+    Renderer3D::start_scene(camera.get_view_matrix(), camera.get_projection_matrix());
     
     m_root_node->on_render();
 
+    Renderer3D::end_scene();
     Renderer2D::flush_batch();
 }
 
