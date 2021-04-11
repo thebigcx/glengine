@@ -11,6 +11,8 @@ class Camera;
 class LuaAPI
 {
 public:
+    static int lua_dumpstack(lua_State* l);
+
     static Node* find_node(lua_State* l);
     static Camera* find_main_camera();
 
@@ -22,6 +24,14 @@ public:
 
     static int lua_get_this(lua_State* l);
     static int lua_get_gameobject_field(lua_State* l);
+    static int lua_get_component(lua_State* l);
+    static int lua_has_component(lua_State* l);
+    static int lua_find_gameobject_name(lua_State* l);
+    static int lua_gameobject_create(lua_State* l);
+    static int lua_gameobject_delete(lua_State* l);
+    static int lua_gameobject_get_child(lua_State* l);
+    static int lua_gameobject_create_child(lua_State* l);
+    static int lua_create_component(lua_State* l);
 
     static int lua_get_transform_field(lua_State* l);
 
@@ -45,6 +55,13 @@ public:
     static int lua_is_key_pressed(lua_State* l);
 
     static int lua_get_camera_field(lua_State* l);
+
+    static int lua_get_audio_source_field(lua_State* l);
+    static int lua_audio_source_play(lua_State* l);
+    static int lua_audio_source_pause(lua_State* l);
+
+    static int lua_get_sprite_field(lua_State* l);
+    static int lua_set_sprite_color(lua_State* l);
 
     static void register_api(const LuaScript& script);
 };

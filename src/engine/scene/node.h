@@ -76,6 +76,8 @@ public:
     void set_enabled(bool enabled = true) { m_enabled = enabled; }
     bool is_enabled() const { return m_enabled; }
 
+    Node* find_child(const std::string& name);
+
 private:
     std::string m_name;
     bool m_enabled = true;

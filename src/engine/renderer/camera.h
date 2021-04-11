@@ -54,7 +54,7 @@ private:
 
     float m_aspect;
 
-    CameraProjection m_projection_type;
+    CameraProjection m_projection_type = CameraProjection::Orthographic;
 
     OrthoData m_ortho_data;
     PerspectiveData m_perspective_data;

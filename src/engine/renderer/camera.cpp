@@ -90,10 +90,9 @@ void Camera::set_main_camera(Camera* camera)
     {
         main_camera->m_is_main_camera = false;
     }
-    else
-    {
-        main_camera = camera;
-    }
+    
+    main_camera = camera;
 
-    camera->m_is_main_camera = true;
+    if (camera) // Set to nullptr for no camera
+        camera->m_is_main_camera = true;
 }

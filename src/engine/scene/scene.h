@@ -12,6 +12,7 @@ class Scene
 {
 public:
     Scene();
+    ~Scene();
 
     void on_start();
     void on_render();
@@ -23,10 +24,10 @@ public:
     Node* create_node(const std::string& name);
     void remove_node(Node* node);
 
-    const std::vector<Node*>& get_nodes() const { return m_nodes; }
+    Node* get_root_node() const { return m_root_node; }
 
     void on_event(Event& e);
 
 private:
-    std::vector<Node*> m_nodes;
+    Node* m_root_node;
 };

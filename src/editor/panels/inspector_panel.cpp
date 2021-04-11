@@ -188,14 +188,28 @@ void InspectorPanel::draw_components(Node* node)
 
     draw_component<Camera>(ICON_FK_VIDEO_CAMERA " Camera", node, [node]
     {
+        Camera* camera = node->get_component<Camera>();
+        bool main = camera->is_main_camera();
+        
         ImGui::Columns(2);
+
+        ImGui::Text("Main");
+        ImGui::NextColumn();
+        ImGui::Checkbox("##is_main_camera", &main);
+        ImGui::NextColumn();
+
+        if (main)
+            Camera::set_main_camera(camera);
+        else
+        {
+            if (Camera::main_camera == camera)
+                Camera::set_main_camera(nullptr);
+        }
 
         ImGui::Text("Projection");
         ImGui::NextColumn();
 
         std::string camera_types[] = { "Orthographic", "Perspective" };
-
-        Camera* camera = node->get_component<Camera>();
 
         if (ImGui::BeginCombo("##camera_type", camera_types[(int)camera->get_projection_type()].c_str()))
         {
@@ -326,6 +340,18 @@ void InspectorPanel::draw_components(Node* node)
 
     draw_component<AudioListener>(ICON_FK_HEADPHONES " Audio Listener", node, [node]
     {
+        bool main = node->get_component<AudioListener>()->is_main_listener();
 
+        ImGui::Columns(2);
+
+        ImGui::Text("Main");
+        ImGui::NextColumn();
+        ImGui::Checkbox("##is_main_listener", &main);
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+
+        if (main)
+            AudioListener::set_main(*node->get_component<AudioListener>());
     });
 }

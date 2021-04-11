@@ -4,6 +4,7 @@
 #include <string>
 
 #include "engine/scene/component.h"
+#include "engine/maths/vector3.h"
 
 struct ALCcontext;
 struct ALCdevice;
@@ -40,7 +41,18 @@ private:
 class AudioListener : public Component
 {
 public:
-    static void set_main(const AudioListener& listener);
+    static void set_main(AudioListener& listener);
+
+    bool is_main_listener() const { return m_is_main_listener; }
+
+    void on_transform_change() override;
+
+    Vector3f get_position() const;
+
+private:
+    static inline AudioListener* m_main_listener;
+
+    bool m_is_main_listener = false;
 };
 
 class AudioSource : public Component

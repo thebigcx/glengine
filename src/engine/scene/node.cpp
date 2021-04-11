@@ -116,3 +116,14 @@ void Node::on_destroy()
     for (auto& c : m_children)
         c->on_destroy();
 }
+
+Node* Node::find_child(const std::string& name)
+{
+    for (auto& c : m_children)
+    {
+        if (c->get_name() == name)
+            return c;
+    }
+
+    return nullptr;
+}

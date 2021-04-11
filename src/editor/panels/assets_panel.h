@@ -1,18 +1,39 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
+
+class AssetView
+{
+public:
+    virtual ~AssetView() {}
+
+    virtual void imgui_render(const std::filesystem::directory_entry& asset) = 0;
+};
+
+class TextureView : public AssetView
+{
+public:
+    void imgui_render(const std::filesystem::directory_entry& asset) override;
+};
+
+class AudioView : public AssetView
+{
+public:
+    void imgui_render(const std::filesystem::directory_entry& asset) override;
+};
+
+class ScriptView : public AssetView
+{
+public:
+    void imgui_render(const std::filesystem::directory_entry& asset) override;
+};
 
 class AssetsPanel
 {
-private:
-    enum class AssetView
-    {
-        Texture, Audio, Mesh, Material, Shader, Script
-    };
-
 public:
     static void imgui_render();
 
 private:
-    static inline AssetView m_asset_view;
+    static inline AssetView* m_asset_view;
 };

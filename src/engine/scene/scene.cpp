@@ -8,7 +8,12 @@
 
 Scene::Scene()
 {
+    m_root_node = new Node("Root", nullptr, this);
+}
 
+Scene::~Scene()
+{
+    delete m_root_node;
 }
 
 void Scene::on_render()
@@ -18,10 +23,7 @@ void Scene::on_render()
 
     Renderer2D::start_scene(Camera::main_camera->get_view_matrix(), Camera::main_camera->get_projection_matrix());
     
-    for (auto& node : m_nodes)
-    {
-        node->on_render();
-    }
+    m_root_node->on_render();
 
     Renderer2D::flush_batch();
 }
@@ -30,20 +32,14 @@ void Scene::on_editor_render(const EditorCamera& camera)
 {
     Renderer2D::start_scene(camera.get_view_matrix(), camera.get_projection_matrix());
     
-    for (auto& node : m_nodes)
-    {
-        node->on_render();
-    }
+    m_root_node->on_render();
 
     Renderer2D::flush_batch();
 }
 
 void Scene::on_update(float dt)
 {
-    for (auto& node : m_nodes)
-    {
-        node->on_update(dt);
-    }
+    m_root_node->on_update(dt);
 }
 
 void Scene::on_editor_update(float dt)
@@ -56,36 +52,25 @@ void Scene::on_editor_update(float dt)
 
 Node* Scene::create_node(const std::string& name)
 {
-    Node* node = new Node(name, nullptr, this);
-    m_nodes.emplace_back(node);
-    return node;
+    return m_root_node->create_child(name);
 }
 
 void Scene::remove_node(Node* node)
 {
-    m_nodes.erase(std::find(m_nodes.begin(), m_nodes.end(), node));
+    m_root_node->remove_child(node);
 }
 
 void Scene::on_event(Event& e)
 {
-    for (auto& node : m_nodes)
-    {
-        node->on_event(e);
-    }
+    m_root_node->on_event(e);
 }
 
 void Scene::on_start()
 {
-    for (auto& node : m_nodes)
-    {
-        node->on_start();
-    }
+    m_root_node->on_start();
 }
 
 void Scene::on_destroy()
 {
-    for (auto& node : m_nodes)
-    {
-        node->on_destroy();
-    }
+    m_root_node->on_destroy();
 }

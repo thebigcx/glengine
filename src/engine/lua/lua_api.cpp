@@ -6,6 +6,8 @@
 #include "engine/core/keyboard.h"
 #include "engine/renderer/camera.h"
 #include "engine/scene/scene.h"
+#include "engine/audio/audio.h"
+#include "engine/renderer/sprite.h"
 
 #include <iostream>
 
@@ -31,6 +33,12 @@ static void dumpstack (lua_State *L) {
         break;
     }
   }
+}
+
+int LuaAPI::lua_dumpstack(lua_State* l)
+{
+    dumpstack(l);
+    return 0;
 }
 
 float LuaAPI::get_vector3_num(lua_State* l, const std::string& field, int table)
@@ -64,7 +72,7 @@ Camera* LuaAPI::find_main_camera()
     // TODO: this is hack, find a better way.
     Scene* scene = LuaScript::scripts[0]->get_owner()->get_scene();
 
-    for (auto& node : scene->get_nodes())
+    for (auto& node : scene->get_root_node()->get_children())
     {
         if (node->has_component<Camera>() && node->get_component<Camera>()->is_main_camera())
         {
@@ -98,9 +106,125 @@ int LuaAPI::lua_get_gameobject_field(lua_State* l)
 
         luaL_getmetatable(l, "TransformMetaTable");
         lua_setmetatable(l, -2);
+
+        return 1;
     }
 
+    lua_getglobal(l, "GameObject");
+    lua_pushstring(l, field);
+    lua_rawget(l, -2);
+
     return 1;
+}
+
+int LuaAPI::lua_get_component(lua_State* l)
+{
+    Node* node = static_cast<Node*>(lua_touserdata(l, -2));
+    const char* component = lua_tostring(l, -1);
+
+    if (!strcmp(component, "Sprite"))
+    {
+        Sprite* com = node->get_component<Sprite>();
+        lua_pushlightuserdata(l, (void*)com);
+        luaL_getmetatable(l, "SpriteMetaTable");
+        lua_setmetatable(l, -2);
+
+        return 1;
+    }
+    else if (!strcmp(component, "AudioSource"))
+    {
+        AudioSource* com = node->get_component<AudioSource>();
+        lua_pushlightuserdata(l, (void*)com);
+        luaL_getmetatable(l, "AudioSourceMetaTable");
+        lua_setmetatable(l, -2);
+
+        return 1;
+    }
+}
+
+int LuaAPI::lua_has_component(lua_State* l)
+{
+    Node* node = static_cast<Node*>(lua_touserdata(l, -2));
+    const char* component = lua_tostring(l, -1);
+
+    if (!strcmp(component, "Sprite"))
+        lua_pushboolean(l, node->has_component<Sprite>());
+    else if (!strcmp(component, "AudioSource"))
+        lua_pushboolean(l, node->has_component<AudioSource>());
+    else if (!strcmp(component, "AudioListener"))
+        lua_pushboolean(l, node->has_component<AudioListener>());
+    else if (!strcmp(component, "Script"))
+        lua_pushboolean(l, node->has_component<LuaScript>());
+    else if (!strcmp(component, "Camera"))
+        lua_pushboolean(l, node->has_component<Camera>());
+
+    return 1;
+}
+
+int LuaAPI::lua_find_gameobject_name(lua_State* l)
+{
+    /*const char* name = lua_tostring(l, -1);
+
+    Node* node = Node::find_by_name(name);
+
+    lua_pushlightuserdata(l, (void*)node);
+    luaL_getmetatable(l, "GameObjectMetaTable");
+    lua_setmetatable(l, -2);
+
+    return 1;*/
+}
+
+int LuaAPI::lua_gameobject_create(lua_State* l)
+{
+    return 0;
+}
+
+int LuaAPI::lua_gameobject_delete(lua_State* l)
+{
+    return 0;
+}
+
+int LuaAPI::lua_gameobject_get_child(lua_State* l)
+{
+    Node* parent = (Node*)lua_touserdata(l, -2);
+    const char* child_name = lua_tostring(l, -1);
+
+    lua_pushlightuserdata(l, (void*)parent->find_child(child_name));
+    luaL_getmetatable(l, "GameObjectMetaTable");
+    lua_setmetatable(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_gameobject_create_child(lua_State* l)
+{
+    Node* parent = (Node*)lua_touserdata(l, -2);
+    const char* child_name = lua_tostring(l, -1);
+
+    Node* child = parent->create_child(child_name);
+
+    lua_pushlightuserdata(l, (void*)child);
+    luaL_getmetatable(l, "GameObjectMetaTable");
+    lua_setmetatable(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_create_component(lua_State* l)
+{
+    Node* node = (Node*)lua_touserdata(l, -2);
+    const char* component = lua_tostring(l, -1);
+
+    if (!strcmp(component, "Sprite"))
+    {
+        Sprite* sprite = node->create_component<Sprite>();
+        lua_pushlightuserdata(l, (void*)sprite);
+        luaL_getmetatable(l, "SpriteMetaTable");
+        lua_setmetatable(l, -2);
+        return 1;
+    }
+
+    return 0;
 }
 
 int LuaAPI::lua_get_transform_field(lua_State* l)
@@ -147,7 +271,7 @@ int LuaAPI::lua_set_transform_translation(lua_State* l)
         tr->set_translation(Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_transform_translate(lua_State* l)
@@ -173,7 +297,7 @@ int LuaAPI::lua_transform_translate(lua_State* l)
         tr->set_translation(tr->get_translation() + Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_get_transform_rotation(lua_State* l)
@@ -208,7 +332,7 @@ int LuaAPI::lua_set_transform_rotation(lua_State* l)
         tr->set_rotation(Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_transform_rotate(lua_State* l)
@@ -234,7 +358,7 @@ int LuaAPI::lua_transform_rotate(lua_State* l)
         tr->set_rotation(tr->get_rotation() + Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_get_transform_scale(lua_State* l)
@@ -269,7 +393,7 @@ int LuaAPI::lua_set_transform_scale(lua_State* l)
         tr->set_scale(Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_transform_scale(lua_State* l)
@@ -295,7 +419,7 @@ int LuaAPI::lua_transform_scale(lua_State* l)
         tr->set_scale(tr->get_scale() * Vector3f(x, y, z));
     }
 
-    return 1;
+    return 0;
 }
 
 int LuaAPI::lua_vector3_new(lua_State* l)
@@ -533,6 +657,55 @@ int LuaAPI::lua_get_camera_field(lua_State* l)
     return 1;
 }
 
+int LuaAPI::lua_get_audio_source_field(lua_State* l)
+{
+    const char* field = lua_tostring(l, -1);
+
+    lua_getglobal(l, "AudioSource");
+    lua_pushstring(l, field);
+    lua_rawget(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_audio_source_play(lua_State* l)
+{
+    AudioSource* audio = (AudioSource*)lua_touserdata(l, -1);
+    audio->play();
+    return 0;
+}
+
+int LuaAPI::lua_audio_source_pause(lua_State* l)
+{
+    AudioSource* audio = (AudioSource*)lua_touserdata(l, -1);
+    audio->pause();
+    return 0;
+}
+
+int LuaAPI::lua_get_sprite_field(lua_State* l)
+{
+    const char* field = lua_tostring(l, -1);
+
+    lua_getglobal(l, "Sprite");
+    lua_pushstring(l, field);
+    lua_rawget(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_set_sprite_color(lua_State* l)
+{
+    Sprite* sprite = (Sprite*)lua_touserdata(l, -2);
+
+    float r = get_vector3_num(l, "x", -2);
+    float g = get_vector3_num(l, "y", -2);
+    float b = get_vector3_num(l, "z", -2);
+
+    sprite->set_color(Vector3f(r, g, b));
+
+    return 0;
+}
+
 void LuaAPI::register_api(const LuaScript& script)
 {
     lua_State* l = script.get_lua_state();
@@ -552,6 +725,20 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_newtable(l);
     lua_pushcfunction(l, lua_get_this);
     lua_setfield(l, -2, "this");
+    lua_pushcfunction(l, lua_get_component);
+    lua_setfield(l, -2, "get_component");
+    lua_pushcfunction(l, lua_has_component);
+    lua_setfield(l, -2, "has_component");
+    lua_pushcfunction(l, lua_create_component);
+    lua_setfield(l, -2, "create_component");
+    lua_pushcfunction(l, lua_gameobject_create);
+    lua_setfield(l, -2, "create");
+    lua_pushcfunction(l, lua_gameobject_delete);
+    lua_setfield(l, -2, "delete");
+    lua_pushcfunction(l, lua_gameobject_create_child);
+    lua_setfield(l, -2, "create_child");
+    lua_pushcfunction(l, lua_gameobject_get_child);
+    lua_setfield(l, -2, "get_child");
     lua_setglobal(l, "GameObject");
 
     luaL_newmetatable(l, "GameObjectMetaTable");
@@ -611,10 +798,40 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_pushstring(l, "__div");
     lua_pushcfunction(l, lua_vector3_div);
     lua_settable(l, -3);
+
+    lua_newtable(l);
     lua_setglobal(l, "Camera");
 
     luaL_newmetatable(l, "CameraMetaTable");
     lua_pushstring(l, "__index");
     lua_pushcfunction(l, lua_get_camera_field);
     lua_settable(l, -3);
+
+    lua_newtable(l);
+    lua_pushcfunction(l, lua_audio_source_play);
+    lua_setfield(l, -2, "play");
+    lua_pushcfunction(l, lua_audio_source_pause);
+    lua_setfield(l, -2, "pause");
+    lua_setglobal(l, "AudioSource");
+
+    luaL_newmetatable(l, "AudioSourceMetaTable");
+    lua_pushstring(l, "__index");
+    lua_pushcfunction(l, lua_get_audio_source_field);
+    lua_settable(l, -3);
+
+    lua_newtable(l);
+    lua_pushcfunction(l, lua_set_sprite_color);
+    lua_setfield(l, -2, "set_color");
+    lua_setglobal(l, "Sprite");
+
+    luaL_newmetatable(l, "SpriteMetaTable");
+    lua_pushstring(l, "__index");
+    lua_pushcfunction(l, lua_get_sprite_field);
+    lua_settable(l, -3);
+
+    lua_newtable(l);
+    lua_pushstring(l, "dumpstack");
+    lua_pushcfunction(l, lua_dumpstack);
+    lua_settable(l, -3);
+    lua_setglobal(l, "debug");
 }

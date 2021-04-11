@@ -49,7 +49,7 @@ void LuaScript::load_script(const std::string& script)
     m_lua = luaL_newstate();
     luaL_openlibs(m_lua);
 
-    if (!luaL_dofile(m_lua, script.c_str()))
+    if (luaL_dofile(m_lua, script.c_str()))
     {
         std::cout << lua_tostring(m_lua, -1) << "\n";
     }

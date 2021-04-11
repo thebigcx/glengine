@@ -34,6 +34,7 @@ void Editor::on_start()
     auto node = m_current_scene->create_node("Test");
     node->create_child("Child");
     node->create_component<Sprite>();
+    node->create_component<LuaScript>("assets/script.lua");
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
     camera->on_transform_change();
@@ -160,13 +161,18 @@ void Editor::on_event(Event& e)
 {
     if (e.get_type() == EventType::KeyPress)
     {
-        KeyPressEvent& ke = static_cast<KeyPressEvent&>(e);
-        if (ke.get_key() == Key::Q)
-            m_imguizmo_operation = ImGuizmo::OPERATION::TRANSLATE;
-        else if (ke.get_key() == Key::W)
-            m_imguizmo_operation = ImGuizmo::OPERATION::SCALE;
-        else if (ke.get_key() == Key::E)
-            m_imguizmo_operation = ImGuizmo::OPERATION::ROTATE;
+        if (!m_is_playing)
+        {
+            
+            KeyPressEvent& ke = static_cast<KeyPressEvent&>(e);
+            if (ke.get_key() == Key::Q)
+                m_imguizmo_operation = ImGuizmo::OPERATION::TRANSLATE;
+            else if (ke.get_key() == Key::W)
+                m_imguizmo_operation = ImGuizmo::OPERATION::SCALE;
+            else if (ke.get_key() == Key::E)
+                m_imguizmo_operation = ImGuizmo::OPERATION::ROTATE;
+
+        }
     }
 
     if (e.get_type() != EventType::WindowResize) // Viewport is different to window with ImGui

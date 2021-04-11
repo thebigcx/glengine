@@ -68,7 +68,7 @@ void ScenePanel::imgui_render()
         return;
     }
 
-    for (auto& node : m_scene_context.lock()->get_nodes())
+    for (auto& node : m_scene_context.lock()->get_root_node()->get_children())
         render_node(node);
 
     if (m_node_to_delete)
