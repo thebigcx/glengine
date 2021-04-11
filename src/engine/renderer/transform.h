@@ -3,6 +3,11 @@
 #include "engine/maths/vector3.h"
 #include "engine/maths/matrix4.h"
 
+namespace YAML
+{
+    class Node;
+}
+
 class Node;
 
 class Transform
@@ -20,6 +25,8 @@ public:
 
     Matrix4f get_world_transform() const;
     Matrix4f get_local_transform() const;
+
+    void serialize(YAML::Node& node) const;
 
 private:
     Vector3f m_translation, m_rotation, m_scale;

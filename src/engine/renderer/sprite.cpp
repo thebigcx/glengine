@@ -3,6 +3,8 @@
 #include "engine/scene/node.h"
 #include "engine/renderer/texture.h"
 
+#include "yaml-cpp/yaml.h"
+
 void Sprite::on_render()
 {
     if (m_texture.lock())
@@ -46,4 +48,27 @@ void Sprite::set_uv2(const Vector2f& uv2)
 void Sprite::set_color(const Vector3f& color)
 {
     m_color = color;
+}
+
+void Sprite::serialize(YAML::Node& node)
+{
+    if (m_texture.lock())
+        node["Sprite"]["Texture"] = m_texture.lock()->get_path();
+    else
+        node["Sprite"]["Texture"] = "None";
+
+    node["Sprite"]["Color"][0] = m_color.x;
+    node["Sprite"]["Color"][1] = m_color.y;
+    node["Sprite"]["Color"][2] = m_color.z;
+    node["Sprite"]["Color"].SetStyle(YAML::EmitterStyle::Flow);
+
+    node["Sprite"]["UV 1"][0] = m_uv1.x;
+    node["Sprite"]["UV 1"][1] = m_uv1.y;
+    node["Sprite"]["UV 1"].SetStyle(YAML::EmitterStyle::Flow);
+
+    node["Sprite"]["UV 2"][0] = m_uv2.x;
+    node["Sprite"]["UV 2"][1] = m_uv2.y;
+    node["Sprite"]["UV 2"].SetStyle(YAML::EmitterStyle::Flow);
+
+    node["Sprite"]["Use UVs"] = m_use_uvs;
 }

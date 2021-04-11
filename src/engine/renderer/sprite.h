@@ -29,6 +29,8 @@ public:
     bool using_uvs() const { return m_use_uvs; }
     void use_uvs(bool uvs = true) { m_use_uvs = uvs; }
 
+    void serialize(YAML::Node& node) override;
+
 private:
     Vector2f m_uv1, m_uv2;
 

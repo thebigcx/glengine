@@ -49,6 +49,8 @@ public:
 
     Vector3f get_position() const;
 
+    void serialize(YAML::Node& node) override;
+
 private:
     static inline AudioListener* m_main_listener;
 
@@ -79,6 +81,8 @@ public:
     void stop() const;
 
     AudioSource::State get_state() const;
+
+    void serialize(YAML::Node& node) override;
 
 private:
     uint32_t m_id;

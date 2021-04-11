@@ -14,6 +14,7 @@
 #include "engine/renderer/assets.h"
 #include "engine/lua/lua_script.h"
 #include "engine/audio/audio.h"
+#include "engine/core/serializer.h"
 
 #include "editor/panels/scene_panel.h"
 #include "editor/panels/inspector_panel.h"
@@ -99,6 +100,8 @@ void Editor::on_update(float dt)
 
     ImGui::Begin("Window", nullptr, windowFlags);
     ImGui::DockSpace(ImGui::GetID("MyDockSpace"), ImVec2(0.f, 0.f), ImGuiDockNodeFlags_None);
+
+    render_menu_bar();
 
     ScenePanel::imgui_render();
     InspectorPanel::imgui_render();
@@ -191,5 +194,24 @@ void Editor::on_event(Event& e)
     if (e.get_type() != EventType::WindowResize) // Viewport is different to window with ImGui
     {
         m_current_scene->on_event(e);
+    }
+}
+
+void Editor::render_menu_bar()
+{
+    ImGui::ShowDemoWindow();
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+            {
+                Serializer::serialize_scene(m_current_scene, "assets/test.scene");
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
     }
 }

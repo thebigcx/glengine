@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <yaml-cpp/yaml.h>
 
 LuaScript::LuaScript()
 {
@@ -55,4 +56,9 @@ void LuaScript::load_script(const std::string& script)
     }
 
     LuaAPI::register_api(*this);
+}
+
+void LuaScript::serialize(YAML::Node& node)
+{
+    node["Lua Script"]["Path"] = m_path;
 }

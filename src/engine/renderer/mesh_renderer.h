@@ -14,6 +14,8 @@ public:
     void set_material(const std::weak_ptr<Material>& material) { m_material = material; }
     const std::weak_ptr<Material>& get_material() const { return m_material; }
 
+    void serialize(YAML::Node& node) override;
+
 private:
     std::weak_ptr<Material> m_material;
 };

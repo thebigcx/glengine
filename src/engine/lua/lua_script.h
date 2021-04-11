@@ -26,6 +26,8 @@ public:
 
     static inline std::vector<LuaScript*> scripts;
 
+    void serialize(YAML::Node& node) override;
+
 private:
     lua_State* m_lua;
     std::string m_path = "";

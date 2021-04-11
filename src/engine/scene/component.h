@@ -3,6 +3,11 @@
 class Node;
 class Event;
 
+namespace YAML
+{
+    class Node;
+}
+
 class Component
 {
     friend class Node;
@@ -18,6 +23,8 @@ public:
     virtual void on_destroy() {}
     virtual void on_event(Event& e) {}
     virtual void on_transform_change() {}
+
+    virtual void serialize(YAML::Node& node) = 0;
 
 protected:
     Node* m_owner;

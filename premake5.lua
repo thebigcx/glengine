@@ -48,7 +48,8 @@ project "editor"
         "dl",
         "lua",
         "openal",
-        "assimp"
+        "assimp",
+        "yaml-cpp"
     }
 
     filter "configurations:debug"

@@ -80,6 +80,8 @@ public:
 
     Node* find_child(const std::string& name);
 
+    const std::unordered_map<std::type_index, Component*>& get_components() const { return m_components; }
+
 private:
     std::string m_name;
     bool m_enabled = true;

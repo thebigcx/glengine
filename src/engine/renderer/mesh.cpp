@@ -4,6 +4,7 @@
 #include "engine/renderer/assets.h"
 
 #include <glad/glad.h>
+#include <yaml-cpp/yaml.h>
 
 Mesh::Mesh()
 {
@@ -47,4 +48,9 @@ void Mesh::load(const std::string& path)
 
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (void*)offsetof(Vertex3D, uv));
     glEnableVertexAttribArray(3);
+}
+
+void Mesh::serialize(YAML::Node& node)
+{
+    node["Mesh"]["Path"] = m_path;
 }

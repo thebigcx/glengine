@@ -2,6 +2,7 @@
 #include "engine/scene/node.h"
 
 #include <AL/al.h>
+#include <yaml-cpp/yaml.h>
 
 AudioSource::AudioSource()
 {
@@ -67,4 +68,12 @@ AudioSource::State AudioSource::get_state() const
         default:
             return AudioSource::State::Initial;
     };
+}
+
+void AudioSource::serialize(YAML::Node& node)
+{
+    if (m_buffer)
+        node["Audio Source"]["Path"] = m_buffer->get_path();
+    else
+        node["Audio Source"]["Path"] = "None";
 }

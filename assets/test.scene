@@ -1,0 +1,38 @@
+Game Objects:
+  Test:
+    Name: Test
+    Transform:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Components:
+      Mesh Renderer:
+        Material: None
+      Mesh:
+        Path: assets/test.fbx
+      Lua Script:
+        Path: assets/script.lua
+      Sprite:
+        Texture: None
+        Color: [1, 1, 1]
+        UV 1: [0, 0]
+        UV 2: [0, 0]
+        Use UVs: false
+  Camera:
+    Name: Camera
+    Transform:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Components:
+      Camera:
+        Main: true
+        Projection Type: Orthographic
+        Orthographic:
+          Size: 10
+          Near Clip: -1
+          Far Clip: 1
+        Perspective:
+          FOV: 45
+          Near Clip: 0.100000001
+          Far Clip: 100

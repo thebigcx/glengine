@@ -49,6 +49,8 @@ public:
     const OrthoData& get_ortho() const { return m_ortho_data; }
     const PerspectiveData& get_perspective() const { return m_perspective_data; }
 
+    void serialize(YAML::Node& node) override;
+
 private:
     Matrix4f m_view_matrix, m_projection_matrix;
 

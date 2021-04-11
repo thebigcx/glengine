@@ -2,6 +2,7 @@
 #include "engine/scene/node.h"
 
 #include <AL/al.h>
+#include <yaml-cpp/yaml.h>
 
 void AudioListener::set_main(AudioListener& listener)
 {
@@ -28,4 +29,9 @@ void AudioListener::on_transform_change()
 Vector3f AudioListener::get_position() const
 {
     return m_owner->get_transform().get_world_transform()[3];
+}
+
+void AudioListener::serialize(YAML::Node& node)
+{
+    node["Audio Listener"]["Main"] = m_is_main_listener;
 }

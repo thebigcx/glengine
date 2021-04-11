@@ -35,6 +35,8 @@ public:
 
     const std::string& get_path() const { return m_path; }
 
+    void serialize(YAML::Node& node) override;
+
 private:
     uint32_t m_vao = 0, m_vbo = 0, m_ebo = 0;
     uint32_t m_index_count = 0;
