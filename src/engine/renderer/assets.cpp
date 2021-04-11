@@ -1,6 +1,7 @@
 #include "engine/renderer/assets.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
+#include "engine/renderer/material.h"
 #include "engine/audio/audio.h"
 
 void AssetManager::flush()
@@ -21,15 +22,15 @@ std::weak_ptr<Texture> AssetManager::get_texture(const std::string& path)
     return texture;
 }
 
-std::weak_ptr<Shader> AssetManager::get_shader(const std::string& vs, const std::string& fs)
+std::weak_ptr<Shader> AssetManager::get_shader(const std::string& path)
 {
-    if (m_shaders.exists(vs))
+    if (m_shaders.exists(path))
     {
-        return m_shaders.get(vs);
+        return m_shaders.get(path);
     }
 
-    std::shared_ptr<Shader> shader = std::make_shared<Shader>(vs, fs);
-    m_shaders.add(vs, shader);
+    std::shared_ptr<Shader> shader = std::make_shared<Shader>(path);
+    m_shaders.add(path, shader);
     return shader;
 }
 
@@ -43,4 +44,17 @@ std::weak_ptr<AudioBuffer> AssetManager::get_audio_buffer(const std::string& pat
     std::shared_ptr<AudioBuffer> audio_buffer = AudioBuffer::load(path);
     m_audio_buffers.add(path, audio_buffer);
     return audio_buffer;
+}
+
+std::weak_ptr<Material> AssetManager::get_material(const std::string& name)
+{
+    if (m_materials.exists(name))
+    {
+        return m_materials.get(name);
+    }
+
+    std::shared_ptr<Material> material = std::make_shared<Material>();
+    material->set_name(name);
+    m_materials.add(name, material);
+    return material;
 }

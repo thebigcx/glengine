@@ -50,7 +50,7 @@ void Renderer2D::init()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_INDICES * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 
-    m_data.shader = AssetManager::get_instance()->get_shader("assets/texture_2d.vert", "assets/texture_2d.frag");
+    m_data.shader = AssetManager::get_instance()->get_shader("assets/texture_2d.glsl");
 
     uint32_t white = 0xffffffff;
     m_data.textures[0] = std::make_shared<Texture>(1, 1, &white);

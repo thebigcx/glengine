@@ -8,31 +8,43 @@ class AssetView
 public:
     virtual ~AssetView() {}
 
-    virtual void imgui_render(const std::filesystem::directory_entry& asset) = 0;
+    virtual void imgui_render() = 0;
 };
 
 class TextureView : public AssetView
 {
 public:
-    void imgui_render(const std::filesystem::directory_entry& asset) override;
+    void imgui_render() override;
 };
 
 class AudioView : public AssetView
 {
 public:
-    void imgui_render(const std::filesystem::directory_entry& asset) override;
+    void imgui_render() override;
 };
 
 class ScriptView : public AssetView
 {
 public:
-    void imgui_render(const std::filesystem::directory_entry& asset) override;
+    void imgui_render() override;
 };
 
 class ModelView : public AssetView
 {
 public:
-    void imgui_render(const std::filesystem::directory_entry& asset) override;
+    void imgui_render() override;
+};
+
+class MaterialView : public AssetView
+{
+public:
+    void imgui_render() override;
+};
+
+class ShaderView : public AssetView
+{
+public:
+    void imgui_render() override;
 };
 
 class AssetsPanel

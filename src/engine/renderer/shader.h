@@ -7,7 +7,8 @@
 class Shader
 {
 public:
-    Shader(const std::string& vs, const std::string& fs);
+    Shader(const std::string& vert, const std::string& frag);
+    Shader(const std::string& path);
     ~Shader();
 
     int get_uniform_location(const std::string& name);
@@ -19,4 +20,6 @@ public:
 
 private:
     uint32_t m_id = 0;
+
+    void compile(const char* vs, const char* fs);
 };

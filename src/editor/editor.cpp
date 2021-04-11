@@ -42,10 +42,10 @@ void Editor::on_start()
     node->create_component<Mesh>();
 
     auto mrender = node->create_component<MeshRenderer>();
-    auto material = std::make_shared<Material>();
-    material->set_albedo(AssetManager::get_instance()->get_texture("assets/texture_test.png"));
-    material->set_shader(AssetManager::get_instance()->get_shader("assets/basic_3d.vert", "assets/basic_3d.frag"));
-    mrender->set_material(material);
+
+    auto material = AssetManager::get_instance()->get_material("New Material");
+    material.lock()->set_albedo(AssetManager::get_instance()->get_texture("assets/texture_test.png"));
+    material.lock()->set_shader(AssetManager::get_instance()->get_shader("assets/basic_3d.glsl"));
 
     node->get_component<Mesh>()->load("assets/test.fbx");
     auto cam_node = m_current_scene->create_node("Camera");

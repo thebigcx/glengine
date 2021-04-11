@@ -22,12 +22,54 @@ Shader::Shader(const std::string& vs, const std::string& fs)
     const char* v_shader_src = v_shader.c_str();
     const char* f_shader_src = f_shader.c_str();
 
+    compile(v_shader_src, f_shader_src);
+}
+
+Shader::Shader(const std::string& path)
+{
+    std::string vert, frag;
+
+    const char* type_flag = "#shader";
+
+    std::string source = open_file(path);
+    size_t pos = source.find(type_flag);
+
+    while (pos != std::string::npos)
+    {
+        size_t begin = pos + std::strlen(type_flag) + 1;
+        size_t eol = source.find_first_of("\n", pos);
+        std::string type = source.substr(begin, eol - begin);
+
+        size_t next_line = source.find_first_not_of("\n", eol);
+        pos = source.find(type_flag, next_line);
+
+        if (pos == std::string::npos)
+        {
+            if (type == "vertex")
+                vert = source.substr(next_line);
+            else if (type == "fragment")
+                frag = source.substr(next_line);
+        }
+        else
+        {
+            if (type == "vertex")
+                vert = source.substr(next_line, pos - next_line);
+            else if (type == "fragment")
+                frag = source.substr(next_line, pos - next_line);
+        }
+    }
+
+    compile(vert.c_str(), frag.c_str());
+}
+
+void Shader::compile(const char* vs, const char* fs)
+{
     unsigned int vertex, fragment;
     int success;
     char info_log[512];
 
     vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &v_shader_src, nullptr);
+    glShaderSource(vertex, 1, &vs, nullptr);
     glCompileShader(vertex);
 
     // Check compile errors
@@ -39,7 +81,7 @@ Shader::Shader(const std::string& vs, const std::string& fs)
     }
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &f_shader_src, nullptr);
+    glShaderSource(fragment, 1, &fs, nullptr);
     glCompileShader(fragment);
 
     // Check compile errors

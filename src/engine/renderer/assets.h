@@ -41,6 +41,8 @@ public:
         m_assets.clear();
     }
 
+    const std::unordered_map<std::string, std::shared_ptr<T>>& get_internal_list() const { return m_assets; }
+
 private:
     std::unordered_map<std::string, std::shared_ptr<T>> m_assets;
 };
@@ -48,6 +50,7 @@ private:
 class Texture;
 class Shader;
 class AudioBuffer;
+class Material;
 
 class AssetManager
 {
@@ -60,12 +63,16 @@ public:
 
     void flush();
 
+    const AssetCache<Material>& get_material_cache() const { return m_materials; }
+
     std::weak_ptr<Texture> get_texture(const std::string& path);
-    std::weak_ptr<Shader> get_shader(const std::string& vs, const std::string& fs);
+    std::weak_ptr<Shader> get_shader(const std::string& path);
     std::weak_ptr<AudioBuffer> get_audio_buffer(const std::string& path);
+    std::weak_ptr<Material> get_material(const std::string& name);
 
 private:
     AssetCache<Texture> m_textures;
     AssetCache<Shader> m_shaders;
     AssetCache<AudioBuffer> m_audio_buffers;
+    AssetCache<Material> m_materials;
 };

@@ -8,6 +8,8 @@
 #include "engine/renderer/texture.h"
 #include "engine/renderer/assets.h"
 #include "engine/renderer/mesh.h"
+#include "engine/renderer/mesh_renderer.h"
+#include "engine/renderer/material.h"
 #include "engine/audio/audio.h"
 #include "engine/lua/lua_script.h"
 
@@ -64,10 +66,11 @@ void InspectorPanel::imgui_render()
     {
         add_component<Sprite>(node, ICON_FK_PICTURE_O " Sprite");
         add_component<Camera>(node, ICON_FK_VIDEO_CAMERA " Camera");
-        add_component<AudioSource>(node, ICON_FK_FILE_AUDIO_O " Audio Source");
+        add_component<AudioSource>(node, ICON_FK_MUSIC " Audio Source");
         add_component<AudioListener>(node, ICON_FK_HEADPHONES " Audio Listener");
         add_component<LuaScript>(node, ICON_FK_CODE " Script");
         add_component<Mesh>(node, ICON_FK_CUBE " Mesh");
+        add_component<MeshRenderer>(node, ICON_FK_CUBE " Mesh Renderer");
 
         ImGui::EndCombo();
     }
@@ -311,7 +314,7 @@ void InspectorPanel::draw_components(Node* node)
         ImGui::Columns(1);
     });
 
-    draw_component<AudioSource>(ICON_FK_FILE_AUDIO_O " Audio Source", node, [node]
+    draw_component<AudioSource>(ICON_FK_MUSIC " Audio Source", node, [node]
     {
         ImGui::Columns(2);
 
@@ -377,6 +380,35 @@ void InspectorPanel::draw_components(Node* node)
             {
                 std::string path = (const char*)payload->Data;
                 node->get_component<Mesh>()->load(path);
+            }
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+    });
+
+    draw_component<MeshRenderer>(ICON_FK_CUBE " Mesh Renderer", node, [node]
+    {
+        ImGui::Columns(2);
+
+        ImGui::Text("Material");
+        ImGui::NextColumn();
+
+        char buffer[128];
+        if (node->get_component<MeshRenderer>()->get_material().lock())
+            strcpy(buffer, node->get_component<MeshRenderer>()->get_material().lock()->get_name().c_str());
+
+        ImGui::InputText("##material_name", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("material_asset");
+
+            if (payload)
+            {
+                std::string name = (const char*)payload->Data;
+                node->get_component<MeshRenderer>()->set_material(AssetManager::get_instance()->get_material(name));
             }
         }
 

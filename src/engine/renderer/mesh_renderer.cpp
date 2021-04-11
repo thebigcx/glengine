@@ -10,10 +10,10 @@ void MeshRenderer::on_render()
     if (!m_owner->has_component<Mesh>())
         return; // No mesh to render
 
-    if (!m_material)
+    if (!m_material.lock())
         return;
 
     glEnable(GL_DEPTH_TEST);
 
-    Renderer3D::render_mesh(*m_owner->get_component<Mesh>(), m_owner->get_transform().get_world_transform(), m_material);
+    Renderer3D::render_mesh(*m_owner->get_component<Mesh>(), m_owner->get_transform().get_world_transform(), m_material.lock());
 }

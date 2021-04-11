@@ -2,6 +2,7 @@
 #include "editor/imgui_layer.h"
 #include "engine/renderer/assets.h"
 #include "engine/renderer/texture.h"
+#include "engine/renderer/material.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -9,115 +10,154 @@
 
 #include <filesystem>
 
-void TextureView::imgui_render(const std::filesystem::directory_entry& asset)
+void TextureView::imgui_render()
 {
-    auto ext = asset.path().extension();
-
-    if (ext == ".png" || ext == ".jpeg" || ext == ".jpg")
-    {
-        ImGui::Image(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
-
-        if (ImGui::IsItemHovered())
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
         {
-            ImGui::SetTooltip(asset.path().string().c_str());
-        }
+        auto ext = asset.path().extension();
 
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+        if (ext == ".png" || ext == ".jpeg" || ext == ".jpg")
         {
-            ImGui::SetDragDropPayload("texture_asset", asset.path().c_str(), asset.path().string().size() + 1);
-
             ImGui::Image(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip(asset.path().string().c_str());
+            }
+
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("texture_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Image(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+                ImGui::SameLine();
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+
             ImGui::SameLine();
-            ImGui::Text(asset.path().c_str());
-
-            ImGui::EndDragDropSource();
         }
-
-        ImGui::SameLine();
     }
 }
 
-void AudioView::imgui_render(const std::filesystem::directory_entry& asset)
+void AudioView::imgui_render()
 {
-    auto ext = asset.path().extension();
-
-    if (ext == ".mp3" || ext == ".wav" || ext == ".flac")
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
     {
-        ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+        auto ext = asset.path().extension();
 
-        if (ImGui::IsItemHovered())
+        if (ext == ".mp3" || ext == ".wav" || ext == ".flac")
         {
-            ImGui::SetTooltip(asset.path().string().c_str());
-        }
-
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-        {
-            ImGui::SetDragDropPayload("audio_buffer_asset", asset.path().c_str(), asset.path().string().size() + 1);
-
-            ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
-            ImGui::SameLine();
             ImGui::Text(asset.path().c_str());
 
-            ImGui::EndDragDropSource();
-        }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip(asset.path().string().c_str());
 
-        ImGui::SameLine();
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("audio_buffer_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+        }
     }
 }
 
-void ScriptView::imgui_render(const std::filesystem::directory_entry& asset)
+void ScriptView::imgui_render()
 {
-    auto ext = asset.path().extension();
-
-    if (ext == ".lua")
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
     {
-        ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+        auto ext = asset.path().extension();
 
-        if (ImGui::IsItemHovered())
+        if (ext == ".lua")
         {
-            ImGui::SetTooltip(asset.path().string().c_str());
-        }
-
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-        {
-            ImGui::SetDragDropPayload("script_asset", asset.path().c_str(), asset.path().string().size() + 1);
-
-            ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
-            ImGui::SameLine();
             ImGui::Text(asset.path().c_str());
 
-            ImGui::EndDragDropSource();
-        }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip(asset.path().string().c_str());
 
-        ImGui::SameLine();
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("script_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+        }
     }
 }
 
-void ModelView::imgui_render(const std::filesystem::directory_entry& asset)
+void ModelView::imgui_render()
 {
-    auto ext = asset.path().extension();
-
-    if (ext == ".fbx")
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
     {
-        ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+        auto ext = asset.path().extension();
+
+        if (ext == ".fbx")
+        {
+            ImGui::Text(asset.path().c_str());
+
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip(asset.path().string().c_str());
+
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("model_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+        }
+    }
+}
+
+void MaterialView::imgui_render()
+{
+    for (auto& material : AssetManager::get_instance()->get_material_cache().get_internal_list())
+    {
+        ImGui::Text(material.second->get_name().c_str());
 
         if (ImGui::IsItemHovered())
-        {
-            ImGui::SetTooltip(asset.path().string().c_str());
-        }
+            ImGui::SetTooltip(material.second->get_name().c_str());
 
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
         {
-            ImGui::SetDragDropPayload("model_asset", asset.path().c_str(), asset.path().string().size() + 1);
+            ImGui::SetDragDropPayload("material_asset", material.second->get_name().c_str(), material.second->get_name().size() + 1);
 
-            ImGui::Image(0, ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
-            ImGui::SameLine();
-            ImGui::Text(asset.path().c_str());
+            ImGui::Text(material.second->get_name().c_str());
 
             ImGui::EndDragDropSource();
         }
+    }
+}
 
-        ImGui::SameLine();
+void ShaderView::imgui_render()
+{
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
+    {
+        auto ext = asset.path().extension();
+
+        if (ext == ".glsl")
+        {
+            ImGui::Text(asset.path().c_str());
+
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip(asset.path().string().c_str());
+
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("shader_asset", asset.path().c_str(), asset.path().string().size() + 1);
+
+                ImGui::Text(asset.path().c_str());
+
+                ImGui::EndDragDropSource();
+            }
+        }
     }
 }
 
@@ -139,9 +179,12 @@ void AssetsPanel::imgui_render()
 
     if (ImGui::Button(ICON_FK_CUBE " 3D Models", ImVec2(200, 0)))
         m_asset_view = new ModelView();
-        
-    ImGui::Button(ICON_FK_CIRCLE " Materials", ImVec2(200, 0));
-    ImGui::Button(ICON_FK_EYE " Shaders", ImVec2(200, 0));
+
+    if (ImGui::Button(ICON_FK_CIRCLE " Materials", ImVec2(200, 0)))
+        m_asset_view = new MaterialView();
+    
+    if (ImGui::Button(ICON_FK_EYE " Shaders", ImVec2(200, 0)))
+        m_asset_view = new ShaderView();
 
     if (ImGui::Button(ICON_FK_CODE " Scripts", ImVec2(200, 0)))
         m_asset_view = new ScriptView();
@@ -152,10 +195,7 @@ void AssetsPanel::imgui_render()
 
     ImGui::BeginChild("asset_viewer");
 
-    for (auto& asset : std::filesystem::directory_iterator("assets"))
-    {
-        m_asset_view->imgui_render(asset);
-    }
+    m_asset_view->imgui_render();
 
     ImGui::EndChild();
 
