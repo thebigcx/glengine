@@ -10,6 +10,7 @@
 #include "engine/renderer/mesh.h"
 #include "engine/renderer/mesh_renderer.h"
 #include "engine/renderer/material.h"
+#include "engine/renderer/shader.h"
 #include "engine/audio/audio.h"
 #include "engine/lua/lua_script.h"
 
@@ -97,6 +98,26 @@ void InspectorPanel::render_material_inspector()
             {
                 std::string path = (const char*)payload->Data;
                 material.lock()->set_albedo(AssetManager::get_instance()->get_texture(path));
+            }
+        }
+    }
+
+    if (ImGui::CollapsingHeader("Shader"))
+    {
+        char buffer[128];
+        if (material.lock()->get_shader().lock())
+            strcpy(buffer, material.lock()->get_shader().lock()->get_path().c_str());
+        
+        ImGui::InputText("##shader_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            auto payload = ImGui::AcceptDragDropPayload("shader_asset");
+
+            if (payload)
+            {
+                std::string path = (const char*)payload->Data;
+                material.lock()->set_shader(AssetManager::get_instance()->get_shader(path));
             }
         }
     }
@@ -202,9 +223,9 @@ void InspectorPanel::draw_components(Node* node)
 
         char buffer[128];
         if (sprite->get_texture().lock())
-        {
             strcpy(buffer, sprite->get_texture().lock()->get_path().c_str());
-        }
+        else
+            strcpy(buffer, "");
         ImGui::InputText("##texture_path", buffer, 128, ImGuiInputTextFlags_ReadOnly);
 
         if (ImGui::BeginDragDropTarget())

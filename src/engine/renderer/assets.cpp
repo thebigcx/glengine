@@ -3,6 +3,9 @@
 #include "engine/renderer/shader.h"
 #include "engine/renderer/material.h"
 #include "engine/audio/audio.h"
+#include "engine/core/deserializer.h"
+
+#include <filesystem>
 
 void AssetManager::flush()
 {
@@ -51,6 +54,13 @@ std::weak_ptr<Material> AssetManager::get_material(const std::string& name)
     if (m_materials.exists(name))
     {
         return m_materials.get(name);
+    }
+
+    if (std::filesystem::exists("assets/" + name + ".material"))
+    {
+        auto material = Deserializer::deserialize_material(name);
+        m_materials.add(name, material);
+        return material;
     }
 
     std::shared_ptr<Material> material = std::make_shared<Material>();

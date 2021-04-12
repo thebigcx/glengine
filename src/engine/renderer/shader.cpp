@@ -15,17 +15,8 @@ static std::string open_file(const std::string& path)
     return stream.str();
 }
 
-Shader::Shader(const std::string& vs, const std::string& fs)
-{
-    auto v_shader = open_file(vs);
-    auto f_shader = open_file(fs);
-    const char* v_shader_src = v_shader.c_str();
-    const char* f_shader_src = f_shader.c_str();
-
-    compile(v_shader_src, f_shader_src);
-}
-
 Shader::Shader(const std::string& path)
+    : m_path(path)
 {
     std::string vert, frag;
 

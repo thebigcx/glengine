@@ -19,6 +19,8 @@ public:
 
     void set_name(const std::string& name) { m_name = name; }
     const std::string& get_name() const { return m_name; }
+
+    void serialize();
     
 private:
     std::weak_ptr<Texture> m_albedo;

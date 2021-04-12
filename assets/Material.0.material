@@ -1,0 +1,3 @@
+Name: Material.0
+Shader: assets/basic_3d.glsl
+Albedo: assets/texture_test.png

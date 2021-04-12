@@ -19,6 +19,8 @@ public:
     void on_destroy() override;
     void on_event(Event& e) override;
 
+    void open_scene(const std::string& path);
+
 private:
     std::shared_ptr<Scene> m_current_scene = nullptr;
 

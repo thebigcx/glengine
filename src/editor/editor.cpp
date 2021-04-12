@@ -15,6 +15,7 @@
 #include "engine/lua/lua_script.h"
 #include "engine/audio/audio.h"
 #include "engine/core/serializer.h"
+#include "engine/core/deserializer.h"
 
 #include "editor/panels/scene_panel.h"
 #include "editor/panels/inspector_panel.h"
@@ -44,14 +45,9 @@ void Editor::on_start()
 
     auto mrender = node->create_component<MeshRenderer>();
 
-    auto material = AssetManager::get_instance()->get_material("New Material");
-    material.lock()->set_albedo(AssetManager::get_instance()->get_texture("assets/texture_test.png"));
-    material.lock()->set_shader(AssetManager::get_instance()->get_shader("assets/basic_3d.glsl"));
-
     node->get_component<Mesh>()->load("assets/test.fbx");
     auto cam_node = m_current_scene->create_node("Camera");
     auto camera = cam_node->create_component<Camera>();
-    camera->on_transform_change();
     Camera::set_main_camera(camera);
     node->get_transform().set_scale(Vector3f(1, 1, 1));
 
@@ -113,6 +109,9 @@ void Editor::on_update(float dt)
         m_is_playing = !m_is_playing;
         if (m_is_playing)
             m_current_scene->on_start();
+        else
+            m_current_scene->on_destroy();
+            // Need to make a copy and restore it here
     }
     ImGui::End();
 
@@ -199,7 +198,6 @@ void Editor::on_event(Event& e)
 
 void Editor::render_menu_bar()
 {
-    ImGui::ShowDemoWindow();
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -214,4 +212,14 @@ void Editor::render_menu_bar()
 
         ImGui::EndMenuBar();
     }
+}
+
+void Editor::open_scene(const std::string& path)
+{
+    m_current_scene = Deserializer::deserialize_scene(path);
+
+    ScenePanel::set_scene(m_current_scene);
+    InspectorPanel::set_scene(m_current_scene);
+
+    InspectorPanel::node_selection = nullptr;
 }

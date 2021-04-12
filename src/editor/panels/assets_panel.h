@@ -47,6 +47,12 @@ public:
     void imgui_render() override;
 };
 
+class SceneView : public AssetView
+{
+public:
+    void imgui_render() override;   
+};
+
 class AssetsPanel
 {
 public:

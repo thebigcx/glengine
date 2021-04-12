@@ -7,27 +7,42 @@ Game Objects:
       Scale: [1, 1, 1]
     Components:
       Mesh Renderer:
-        Material: None
+        Material: Material.0
       Mesh:
         Path: assets/test.fbx
       Lua Script:
         Path: assets/script.lua
       Sprite:
         Texture: None
-        Color: [1, 1, 1]
+        Color: [1, 0, 0]
         UV 1: [0, 0]
         UV 2: [0, 0]
         Use UVs: false
+    Children:
+      Child:
+        Name: Child
+        Transform:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+      New Child From Lua:
+        Name: New Child From Lua
+        Transform:
+          Translation: [1, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
   Camera:
     Name: Camera
     Transform:
-      Translation: [0, 0, 0]
+      Translation: [-0.200000033, 1.47550488, 2.71866965]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     Components:
+      Lua Script:
+        Path: assets/script2.lua
       Camera:
         Main: true
-        Projection Type: Orthographic
+        Projection Type: Perspective
         Orthographic:
           Size: 10
           Near Clip: -1

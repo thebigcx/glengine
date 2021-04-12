@@ -15,6 +15,9 @@ void MeshRenderer::on_render()
     if (!m_material.lock())
         return;
 
+    if (!m_material.lock()->get_shader().lock())
+        return;
+
     glEnable(GL_DEPTH_TEST);
 
     Renderer3D::render_mesh(*m_owner->get_component<Mesh>(), m_owner->get_transform().get_world_transform(), m_material.lock());

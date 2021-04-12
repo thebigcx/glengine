@@ -4,6 +4,7 @@
 #include "engine/maths/vector3.h"
 #include "engine/maths/quaternion.h"
 #include "engine/maths/math.h"
+#include "engine/core/application.h"
 
 #include <iostream>
 #include <yaml-cpp/yaml.h>
@@ -11,6 +12,12 @@
 Camera::Camera()
 {
 
+}
+
+void Camera::on_start()
+{
+    on_transform_change();
+    on_window_resize(Application::get_instance()->get_window()->get_width(), Application::get_instance()->get_window()->get_height());
 }
 
 void Camera::on_event(Event& e)

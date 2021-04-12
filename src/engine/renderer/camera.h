@@ -25,6 +25,8 @@ private:
 public:
     Camera();
 
+    void on_start() override;
+
     void on_event(Event& e) override;
     void on_transform_change() override;
 

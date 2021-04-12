@@ -4,6 +4,7 @@
 #include "engine/renderer/texture.h"
 #include "engine/renderer/material.h"
 #include "editor/panels/inspector_panel.h"
+#include "editor/editor.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
 
@@ -139,6 +140,18 @@ void MaterialView::imgui_render()
             ImGui::EndDragDropSource();
         }
     }
+
+    if (ImGui::Button("Create New Material"))
+    {
+        // Generate a unique name
+        uint32_t suffix = 0;
+        while (AssetManager::get_instance()->get_material_cache().exists("Material." + std::to_string(suffix)))
+            suffix++;
+
+        auto material = std::make_shared<Material>();
+        material->set_name("Material." + std::to_string(suffix));
+        AssetManager::get_instance()->get_material_cache().add(material->get_name(), material);
+    }
 }
 
 void ShaderView::imgui_render()
@@ -161,6 +174,24 @@ void ShaderView::imgui_render()
                 ImGui::Text(asset.path().c_str());
 
                 ImGui::EndDragDropSource();
+            }
+        }
+    }
+}
+
+void SceneView::imgui_render()
+{
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
+    {
+        auto ext = asset.path().extension();
+
+        if (ext == ".scene")
+        {
+            ImGui::Text(asset.path().c_str());
+            ImGui::SameLine();
+            if (ImGui::Button("Open"))
+            {
+                static_cast<Editor*>(Application::get_instance())->open_scene(asset.path().string());
             }
         }
     }
@@ -193,6 +224,9 @@ void AssetsPanel::imgui_render()
 
     if (ImGui::Button(ICON_FK_CODE " Scripts", ImVec2(200, 0)))
         m_asset_view = new ScriptView();
+
+    if (ImGui::Button(ICON_FK_TREE " Scenes", ImVec2(200, 0)))
+        m_asset_view = new SceneView();
 
     ImGui::EndChild();
 
