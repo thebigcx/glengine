@@ -64,20 +64,30 @@ void Editor::on_start()
 void Editor::on_update(float dt)
 {
     if (m_is_playing)
-        m_current_scene->on_update(dt);
-    else
     {
-        m_current_scene->on_editor_update(dt);
-        m_camera.on_update(dt);
+        auto& window = Application::get_instance()->get_window();
+        glViewport(0, 0, window->get_width(), window->get_height());
+
+        m_current_scene->on_update(dt);
+        m_current_scene->on_render();
+        
+        if (Keyboard::is_key_pressed(Key::Escape))
+        {
+            m_is_playing = false;
+            m_current_scene->on_destroy();
+            // TODO: Need to make a copy and restore it here
+        }
+
+        return;
     }
+
+    m_current_scene->on_editor_update(dt);
+    m_camera.on_update(dt);
 
     m_framebuffer->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (m_is_playing)
-        m_current_scene->on_render();
-    else
-        m_current_scene->on_editor_render(m_camera);
+    m_current_scene->on_editor_render(m_camera);
 
     m_framebuffer->unbind();
 
@@ -107,12 +117,8 @@ void Editor::on_update(float dt)
     ImGui::Begin("ScenePlay");
     if (ImGui::Button(ICON_FK_PLAY))
     {
-        m_is_playing = !m_is_playing;
-        if (m_is_playing)
-            m_current_scene->on_start();
-        else
-            m_current_scene->on_destroy();
-            // Need to make a copy and restore it here
+        m_is_playing = true;
+        m_current_scene->on_start();
     }
     ImGui::End();
 
@@ -191,7 +197,7 @@ void Editor::on_event(Event& e)
         }
     }
 
-    if (e.get_type() != EventType::WindowResize) // Viewport is different to window with ImGui
+    if (e.get_type() != EventType::WindowResize || m_is_playing) // Viewport is different to window with ImGui
     {
         m_current_scene->on_event(e);
     }

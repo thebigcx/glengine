@@ -18,12 +18,11 @@ public:
 
     GLFWwindow* get_native_handle() const { return m_window_handle; }
 
-    uint32_t get_width() const { return m_width; }
-    uint32_t get_height() const { return m_height; }
+    uint32_t get_width() const;
+    uint32_t get_height() const;
 
 private:
     GLFWwindow* m_window_handle = nullptr;
 
-    uint32_t m_width, m_height;
     std::string m_title;
 };

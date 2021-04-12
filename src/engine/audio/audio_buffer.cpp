@@ -44,11 +44,6 @@ static uint32_t load_flac(const std::string& path)
 
 }
 
-static uint32_t load_ogg(const std::string& path)
-{
-
-}
-
 AudioBuffer::AudioBuffer(uint32_t id, const std::string& path)
     : m_id(id), m_path(path)
 {

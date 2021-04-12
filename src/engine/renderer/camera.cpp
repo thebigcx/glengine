@@ -6,8 +6,8 @@
 #include "engine/maths/math.h"
 #include "engine/core/application.h"
 
-#include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <iostream>
 
 Camera::Camera()
 {

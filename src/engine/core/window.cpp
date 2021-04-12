@@ -20,7 +20,7 @@ static void key_callback(GLFWwindow* window_handle, int key, int scancode, int a
 }
 
 Window::Window(uint32_t width, uint32_t height, const std::string& title)
-    : m_width(width), m_height(height), m_title(title)
+    : m_title(title)
 {
     glfwInit();
     m_window_handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
@@ -55,4 +55,19 @@ void Window::swap_buffers() const
 bool Window::should_close() const
 {
     return glfwWindowShouldClose(m_window_handle);
+}
+
+// Would be nice to store width and height in variables, but the resize events are handled by Application.
+uint32_t Window::get_width() const
+{
+    int width, height;
+    glfwGetWindowSize(m_window_handle, &width, &height);
+    return width;
+}
+
+uint32_t Window::get_height() const
+{
+    int width, height;
+    glfwGetWindowSize(m_window_handle, &width, &height);
+    return height;
 }
