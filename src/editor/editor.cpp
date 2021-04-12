@@ -40,7 +40,7 @@ void Editor::on_start()
     auto node = m_current_scene->create_node("Test");
     node->create_child("Child");
     node->create_component<Sprite>();
-    node->create_component<LuaScript>("assets/script.lua");
+    node->create_component<LuaScript>("assets/script3.lua");
     node->create_component<Mesh>();
 
     auto mrender = node->create_component<MeshRenderer>();
@@ -63,12 +63,13 @@ void Editor::on_start()
 
 void Editor::on_update(float dt)
 {
-    m_camera.on_update(dt);
-
     if (m_is_playing)
         m_current_scene->on_update(dt);
     else
+    {
         m_current_scene->on_editor_update(dt);
+        m_camera.on_update(dt);
+    }
 
     m_framebuffer->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

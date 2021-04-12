@@ -10,7 +10,8 @@ end
 function on_update(dt)
     obj = GameObject:this()
     obj:get_component("AudioSource")
-    tr = GameObject:this().transform
+    tr = obj.transform
+    tr:set_translation(0, 0, 0)
     
     if Keyboard.is_key_pressed(87) then
         sprite = GameObject:this():get_component("Sprite")

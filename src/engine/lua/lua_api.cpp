@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+// TODO: fix the problem with light userdata using different metatables
+
 static void dumpstack (lua_State *L) {
   int top=lua_gettop(L);
   for (int i=1; i <= top; i++) {
@@ -87,7 +89,8 @@ Camera* LuaAPI::find_main_camera()
 int LuaAPI::lua_get_this(lua_State* l)
 {
     Node* node = find_node(l);
-    lua_pushlightuserdata(l, (void*)node);
+    Node** ptr = (Node**)lua_newuserdata(l, 8);
+    *ptr = node;
 
     luaL_getmetatable(l, "GameObjectMetaTable");
     lua_setmetatable(l, -2);
@@ -97,12 +100,13 @@ int LuaAPI::lua_get_this(lua_State* l)
 
 int LuaAPI::lua_get_gameobject_field(lua_State* l)
 {
-    Node* node = (Node*)lua_touserdata(l, -2);
+    Node* node = *(Node**)lua_touserdata(l, -2);
     const char* field = lua_tostring(l, -1);
 
     if (!strcmp(field, "transform"))
     {
-        lua_pushlightuserdata(l, (void*)&node->get_transform());
+        Transform** tr = (Transform**)lua_newuserdata(l, 8); // Assumption of pointer size 8 bytes
+        *tr = &node->get_transform();
 
         luaL_getmetatable(l, "TransformMetaTable");
         lua_setmetatable(l, -2);
@@ -119,13 +123,14 @@ int LuaAPI::lua_get_gameobject_field(lua_State* l)
 
 int LuaAPI::lua_get_component(lua_State* l)
 {
-    Node* node = static_cast<Node*>(lua_touserdata(l, -2));
+    Node* node = *(Node**)lua_touserdata(l, -2);
     const char* component = lua_tostring(l, -1);
 
     if (!strcmp(component, "Sprite"))
     {
         Sprite* com = node->get_component<Sprite>();
-        lua_pushlightuserdata(l, (void*)com);
+        Sprite** ptr = (Sprite**)lua_newuserdata(l, 8);
+        *ptr = com;
         luaL_getmetatable(l, "SpriteMetaTable");
         lua_setmetatable(l, -2);
 
@@ -134,17 +139,20 @@ int LuaAPI::lua_get_component(lua_State* l)
     else if (!strcmp(component, "AudioSource"))
     {
         AudioSource* com = node->get_component<AudioSource>();
-        lua_pushlightuserdata(l, (void*)com);
+        AudioSource** ptr = (AudioSource**)lua_newuserdata(l, 8);
+        *ptr = com;
         luaL_getmetatable(l, "AudioSourceMetaTable");
         lua_setmetatable(l, -2);
 
         return 1;
     }
+
+    return 0;
 }
 
 int LuaAPI::lua_has_component(lua_State* l)
 {
-    Node* node = static_cast<Node*>(lua_touserdata(l, -2));
+    Node* node = *(Node**)lua_touserdata(l, -2);
     const char* component = lua_tostring(l, -1);
 
     if (!strcmp(component, "Sprite"))
@@ -186,10 +194,12 @@ int LuaAPI::lua_gameobject_delete(lua_State* l)
 
 int LuaAPI::lua_gameobject_get_child(lua_State* l)
 {
-    Node* parent = (Node*)lua_touserdata(l, -2);
+    Node* parent = *(Node**)lua_touserdata(l, -2);
     const char* child_name = lua_tostring(l, -1);
 
-    lua_pushlightuserdata(l, (void*)parent->find_child(child_name));
+    Node** ptr = (Node**)lua_newuserdata(l, 8);
+    *ptr = parent->find_child(child_name);
+    
     luaL_getmetatable(l, "GameObjectMetaTable");
     lua_setmetatable(l, -2);
 
@@ -198,12 +208,13 @@ int LuaAPI::lua_gameobject_get_child(lua_State* l)
 
 int LuaAPI::lua_gameobject_create_child(lua_State* l)
 {
-    Node* parent = (Node*)lua_touserdata(l, -2);
+    Node* parent = *(Node**)lua_touserdata(l, -2);
     const char* child_name = lua_tostring(l, -1);
 
     Node* child = parent->create_child(child_name);
 
-    lua_pushlightuserdata(l, (void*)child);
+    Node** ptr = (Node**)lua_newuserdata(l, 8);
+    *ptr = child;
     luaL_getmetatable(l, "GameObjectMetaTable");
     lua_setmetatable(l, -2);
 
@@ -212,13 +223,14 @@ int LuaAPI::lua_gameobject_create_child(lua_State* l)
 
 int LuaAPI::lua_create_component(lua_State* l)
 {
-    Node* node = (Node*)lua_touserdata(l, -2);
+    Node* node = *(Node**)lua_touserdata(l, -2);
     const char* component = lua_tostring(l, -1);
 
     if (!strcmp(component, "Sprite"))
     {
         Sprite* sprite = node->create_component<Sprite>();
-        lua_pushlightuserdata(l, (void*)sprite);
+        Sprite** ptr = (Sprite**)lua_newuserdata(l, 8);
+        *ptr = sprite;
         luaL_getmetatable(l, "SpriteMetaTable");
         lua_setmetatable(l, -2);
         return 1;
@@ -229,7 +241,7 @@ int LuaAPI::lua_create_component(lua_State* l)
 
 int LuaAPI::lua_get_transform_field(lua_State* l)
 {
-    Transform* tr = (Transform*)lua_touserdata(l, -2);
+    Transform* tr = *(Transform**)lua_touserdata(l, -2);
     const char* field = lua_tostring(l, -1);
 
     lua_getglobal(l, "Transform");
@@ -241,7 +253,7 @@ int LuaAPI::lua_get_transform_field(lua_State* l)
 
 int LuaAPI::lua_get_transform_translation(lua_State* l)
 {
-    Transform* tr = (Transform*)lua_touserdata(l, -1);
+    Transform* tr = *(Transform**)lua_touserdata(l, -1);
 
     create_vector3(l, tr->get_translation().x, tr->get_translation().y, tr->get_translation().z);
 
@@ -252,7 +264,7 @@ int LuaAPI::lua_set_transform_translation(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -262,7 +274,7 @@ int LuaAPI::lua_set_transform_translation(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -278,7 +290,7 @@ int LuaAPI::lua_transform_translate(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -288,7 +300,7 @@ int LuaAPI::lua_transform_translate(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -302,7 +314,7 @@ int LuaAPI::lua_transform_translate(lua_State* l)
 
 int LuaAPI::lua_get_transform_rotation(lua_State* l)
 {
-    Transform* tr = (Transform*)lua_touserdata(l, -1);
+    Transform* tr = *(Transform**)lua_touserdata(l, -1);
 
     create_vector3(l, tr->get_rotation().x, tr->get_rotation().y, tr->get_rotation().z);
 
@@ -313,7 +325,7 @@ int LuaAPI::lua_set_transform_rotation(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -323,7 +335,7 @@ int LuaAPI::lua_set_transform_rotation(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -339,7 +351,7 @@ int LuaAPI::lua_transform_rotate(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -349,7 +361,7 @@ int LuaAPI::lua_transform_rotate(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -363,7 +375,7 @@ int LuaAPI::lua_transform_rotate(lua_State* l)
 
 int LuaAPI::lua_get_transform_scale(lua_State* l)
 {
-    Transform* tr = (Transform*)lua_touserdata(l, -1);
+    Transform* tr = *(Transform**)lua_touserdata(l, -1);
 
     create_vector3(l, tr->get_scale().x, tr->get_scale().y, tr->get_scale().z);
 
@@ -374,7 +386,7 @@ int LuaAPI::lua_set_transform_scale(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -384,7 +396,7 @@ int LuaAPI::lua_set_transform_scale(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -400,7 +412,7 @@ int LuaAPI::lua_transform_scale(lua_State* l)
 {
     if (lua_isnumber(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -4);
+        Transform* tr = *(Transform**)lua_touserdata(l, -4);
 
         float x = lua_tonumber(l, -3);
         float y = lua_tonumber(l, -2);
@@ -410,7 +422,7 @@ int LuaAPI::lua_transform_scale(lua_State* l)
     }
     else if (lua_istable(l, -1))
     {
-        Transform* tr = (Transform*)lua_touserdata(l, -2);
+        Transform* tr = *(Transform**)lua_touserdata(l, -2);
 
         float x = get_vector3_num(l, "x", -2);
         float y = get_vector3_num(l, "y", -2);
@@ -642,7 +654,8 @@ int LuaAPI::lua_get_camera_field(lua_State* l)
 
     if (!strcmp(field, "main"))
     {
-        lua_pushlightuserdata(l, (void*)find_main_camera());
+        Camera** ptr = (Camera**)lua_newuserdata(l, 8);
+        *ptr = find_main_camera();
 
         luaL_getmetatable(l, "CameraMetaTable");
         lua_setmetatable(l, -2);
@@ -670,14 +683,14 @@ int LuaAPI::lua_get_audio_source_field(lua_State* l)
 
 int LuaAPI::lua_audio_source_play(lua_State* l)
 {
-    AudioSource* audio = (AudioSource*)lua_touserdata(l, -1);
+    AudioSource* audio = *(AudioSource**)lua_touserdata(l, -1);
     audio->play();
     return 0;
 }
 
 int LuaAPI::lua_audio_source_pause(lua_State* l)
 {
-    AudioSource* audio = (AudioSource*)lua_touserdata(l, -1);
+    AudioSource* audio = *(AudioSource**)lua_touserdata(l, -1);
     audio->pause();
     return 0;
 }
@@ -695,7 +708,7 @@ int LuaAPI::lua_get_sprite_field(lua_State* l)
 
 int LuaAPI::lua_set_sprite_color(lua_State* l)
 {
-    Sprite* sprite = (Sprite*)lua_touserdata(l, -2);
+    Sprite* sprite = *(Sprite**)lua_touserdata(l, -2);
 
     float r = get_vector3_num(l, "x", -2);
     float g = get_vector3_num(l, "y", -2);
@@ -711,11 +724,12 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_State* l = script.get_lua_state();
 
     lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "Mouse");
     lua_pushcfunction(l, lua_is_mouse_pressed);
     lua_setfield(l, -2, "is_mouse_pressed");
     lua_pushcfunction(l, lua_get_mouse_position);
     lua_setfield(l, -2, "get_mouse_position");
-    lua_setglobal(l, "Mouse");
 
     lua_newtable(l);
     lua_pushcfunction(l, lua_is_key_pressed);
@@ -723,6 +737,8 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_setglobal(l, "Keyboard");
 
     lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "GameObject");
     lua_pushcfunction(l, lua_get_this);
     lua_setfield(l, -2, "this");
     lua_pushcfunction(l, lua_get_component);
@@ -739,7 +755,6 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_setfield(l, -2, "create_child");
     lua_pushcfunction(l, lua_gameobject_get_child);
     lua_setfield(l, -2, "get_child");
-    lua_setglobal(l, "GameObject");
 
     luaL_newmetatable(l, "GameObjectMetaTable");
     lua_pushstring(l, "__index");
@@ -747,6 +762,8 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_settable(l, -3);
 
     lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "Transform");
 
     lua_pushcfunction(l, lua_get_transform_translation);
     lua_setfield(l, -2, "get_translation");
@@ -768,8 +785,6 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_setfield(l, -2, "set_scale");
     lua_pushcfunction(l, lua_transform_scale);
     lua_setfield(l, -2, "scale");
-
-    lua_setglobal(l, "Transform");
 
     luaL_newmetatable(l, "TransformMetaTable");
     lua_pushstring(l, "__index");
@@ -808,11 +823,12 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_settable(l, -3);
 
     lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "AudioSource");
     lua_pushcfunction(l, lua_audio_source_play);
     lua_setfield(l, -2, "play");
     lua_pushcfunction(l, lua_audio_source_pause);
     lua_setfield(l, -2, "pause");
-    lua_setglobal(l, "AudioSource");
 
     luaL_newmetatable(l, "AudioSourceMetaTable");
     lua_pushstring(l, "__index");
@@ -820,9 +836,10 @@ void LuaAPI::register_api(const LuaScript& script)
     lua_settable(l, -3);
 
     lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "Sprite");
     lua_pushcfunction(l, lua_set_sprite_color);
     lua_setfield(l, -2, "set_color");
-    lua_setglobal(l, "Sprite");
 
     luaL_newmetatable(l, "SpriteMetaTable");
     lua_pushstring(l, "__index");
