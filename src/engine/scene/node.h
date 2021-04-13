@@ -27,6 +27,7 @@ public:
     Scene* get_scene() const { return m_scene; }
     const std::vector<Node*>& get_children() const { return m_children; }
 
+    // Create a component at runtime
     template<typename T, typename... Args>
     T* create_component(Args&&... args)
     {
@@ -62,7 +63,6 @@ public:
         if (!has_component<T>())
             return;
 
-        m_components[typeid(T)]->on_destroy();
         delete m_components[typeid(T)];
         m_components.erase(typeid(T));
     }

@@ -7,7 +7,7 @@ Game Objects:
       Scale: [1, 1, 1]
     Components:
       Mesh Renderer:
-        Material: Material.0
+        Material: None
       Mesh:
         Path: assets/test.fbx
       Lua Script:
@@ -32,6 +32,8 @@ Game Objects:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     Components:
+      Lua Script:
+        Path: assets/fps_camera.lua
       Camera:
         Main: true
         Projection Type: Orthographic

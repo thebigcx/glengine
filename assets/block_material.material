@@ -1,0 +1,3 @@
+Name: block_material
+Shader: assets/basic_3d.glsl
+Albedo: assets/texture_test.png

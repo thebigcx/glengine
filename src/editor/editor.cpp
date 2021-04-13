@@ -75,6 +75,8 @@ void Editor::on_update(float dt)
         {
             m_is_playing = false;
             m_current_scene->on_destroy();
+
+            open_scene("assets/temp.scene");
             // TODO: Need to make a copy and restore it here
         }
 
@@ -118,6 +120,7 @@ void Editor::on_update(float dt)
     if (ImGui::Button(ICON_FK_PLAY))
     {
         m_is_playing = true;
+        Serializer::serialize_scene(m_current_scene, "assets/temp.scene");
         m_current_scene->on_start();
     }
     ImGui::End();
@@ -175,7 +178,6 @@ void Editor::on_update(float dt)
 
 void Editor::on_destroy()
 {
-    m_current_scene->on_destroy();
     ImGuiLayer::destroy();
 }
 

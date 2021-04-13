@@ -63,8 +63,5 @@ std::weak_ptr<Material> AssetManager::get_material(const std::string& name)
         return material;
     }
 
-    std::shared_ptr<Material> material = std::make_shared<Material>();
-    material->set_name(name);
-    m_materials.add(name, material);
-    return material;
+    return std::shared_ptr<Material>(nullptr);
 }

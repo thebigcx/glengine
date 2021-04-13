@@ -144,15 +144,12 @@ void Renderer2D::render_sprite(const std::shared_ptr<Texture>& texture, const Ma
         m_data.texture_slot_index++;
     }
 
-    Vector2f co1 = uv1 / Vector2f(texture->get_size());
-    Vector2f co2 = uv2 / Vector2f(texture->get_size());
-
     const Vector2f uvs[4]
     {
-        { co1.x, co1.y },
-        { co2.x, co1.y },
-        { co2.x, co2.y },
-        { co1.x, co2.y }
+        { uv1.x, uv1.y },
+        { uv2.x, uv1.y },
+        { uv2.x, uv2.y },
+        { uv1.x, uv2.y }
     };
 
     m_data.vertex_ptr->pos = transform * Vector4f(0, 0, 0, 1);

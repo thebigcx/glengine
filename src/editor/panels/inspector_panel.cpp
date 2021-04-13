@@ -163,16 +163,22 @@ void InspectorPanel::draw_component(const std::string& name, Node* node, const F
 
     ImGui::PushID(name.c_str());
 
-    if (ImGui::CollapsingHeader(name.c_str()))
-        fn();
+    bool open = ImGui::CollapsingHeader(name.c_str());
 
+    bool deleted = false;
     if (ImGui::BeginPopupContextItem("Delete"))
     {
         if (ImGui::MenuItem(ICON_FK_TRASH " Delete"))
+        {
             node->remove_component<T>();
+            deleted = true;
+        }
 
         ImGui::EndPopup();
     }
+
+    if (open && !deleted)
+        fn();
 
     ImGui::PopID();
 }
@@ -386,6 +392,92 @@ void InspectorPanel::draw_components(Node* node)
         ImGui::NextColumn();
 
         ImGui::Columns(1);
+        ImGui::Text("Global Variables");
+        ImGui::Columns(2);
+
+        unsigned int deleted_var = -1;
+        int i = 0;
+        for (auto& var : node->get_component<LuaScript>()->global_vars)
+        {
+            ImGui::PushID(&var);
+
+            char buffer[128];
+            strcpy(buffer, var.name.c_str());
+            if (ImGui::InputText("##var_name", buffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                var.name = buffer;
+            }
+
+            if (ImGui::BeginPopupContextItem("Menu"))
+            {
+                if (ImGui::MenuItem(ICON_FK_TRASH_O " Delete"))
+                    deleted_var = i;
+
+                ImGui::EndPopup();
+            }
+
+            ImGui::NextColumn();
+
+            strcpy(buffer, var.string.c_str());
+            if (ImGui::InputText("##value", buffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                var.string = buffer;
+                
+                switch (var.type)
+                {
+                    case LuaGlobalVar::Type::Number:
+                        var.number = std::stof(buffer);
+                        break;
+                    case LuaGlobalVar::Type::String:
+                        var.string = buffer;
+                        break;
+                    case LuaGlobalVar::Type::Boolean:
+                        var.boolean = std::stoi(buffer);
+                        break;
+                }
+            }
+
+            ImGui::NextColumn();
+
+            ImGui::Text("Type");
+            ImGui::NextColumn();
+
+            std::string types[] = { "Number", "String", "Boolean", "Userdata" };
+
+            if (ImGui::BeginCombo("##type", types[(int)var.type].c_str()))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    bool selected = i == (int)var.type;
+                    if (ImGui::Selectable(types[i].c_str(), &selected))
+                    {
+                        var.type = (LuaGlobalVar::Type)i;
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            ImGui::NextColumn();
+
+            i++;
+
+            ImGui::PopID();
+        }
+
+        if (deleted_var != -1)
+        {
+            node->get_component<LuaScript>()->global_vars.erase(node->get_component<LuaScript>()->global_vars.begin() + deleted_var);
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+
+        if (ImGui::Button("Add Global Variable"))
+        {
+            node->get_component<LuaScript>()->global_vars.push_back(LuaGlobalVar("Var"));
+        }
     });
 
     draw_component<AudioSource>(ICON_FK_MUSIC " Audio Source", node, [node]

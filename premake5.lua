@@ -16,6 +16,8 @@ project "engine"
         "src/engine/**.h", "src/engine/**.cpp", "src/engine/**.c"
     }
 
+    optimize "On"
+
     filter "configurations:debug"
         symbols "On"
 
