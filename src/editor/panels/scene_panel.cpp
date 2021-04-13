@@ -10,7 +10,7 @@
 
 #include "imgui/imgui.h"
 
-void ScenePanel::set_scene(const std::shared_ptr<Scene>& scene)
+void ScenePanel::set_scene(Scene* scene)
 {
     m_scene_context = scene;
 }
@@ -64,13 +64,13 @@ void ScenePanel::imgui_render()
 {
     ImGui::Begin(ICON_FK_TREE " Scene Hierarchy");
 
-    if (!m_scene_context.lock())
+    if (!m_scene_context)
     {
         ImGui::End();
         return;
     }
 
-    for (auto& node : m_scene_context.lock()->get_root_node()->get_children())
+    for (auto& node : m_scene_context->get_root_node()->get_children())
         render_node(node);
 
     if (m_node_to_delete)
@@ -81,7 +81,7 @@ void ScenePanel::imgui_render()
         }
         else
         {
-            m_scene_context.lock()->remove_node(m_node_to_delete);
+            m_scene_context->remove_node(m_node_to_delete);
         }
 
         m_node_to_delete = nullptr;
@@ -95,27 +95,27 @@ void ScenePanel::imgui_render()
         {
             if (ImGui::MenuItem(ICON_FK_FILE " Empty Game Object"))
             {
-                auto object = m_scene_context.lock()->create_node("Game Object");
+                auto object = m_scene_context->create_node("Game Object");
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }
             if (ImGui::MenuItem(ICON_FK_VIDEO_CAMERA " Camera"))
             {
-                auto object = m_scene_context.lock()->create_node("Camera");
+                auto object = m_scene_context->create_node("Camera");
                 object->create_component<Camera>();
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }
             if (ImGui::MenuItem(ICON_FK_PICTURE_O " Sprite"))
             {
-                auto object = m_scene_context.lock()->create_node("Sprite");
+                auto object = m_scene_context->create_node("Sprite");
                 object->create_component<Sprite>();
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }
             if (ImGui::MenuItem(ICON_FK_PICTURE_O " Audio Source"))
             {
-                auto object = m_scene_context.lock()->create_node("Audio Source");
+                auto object = m_scene_context->create_node("Audio Source");
                 object->create_component<AudioSource>();
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;

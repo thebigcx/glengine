@@ -86,4 +86,22 @@ void LuaScript::load_script(const std::string& script)
 void LuaScript::serialize(YAML::Node& node)
 {
     node["Lua Script"]["Path"] = m_path;
+
+    for (auto& global : global_vars)
+    {
+        YAML::Node global_node;
+        global_node["Name"] = global.name;
+
+        switch (global.type)
+        {
+            case LuaGlobalVar::Type::Boolean:
+                global_node["Value"] = global.boolean; break;
+            case LuaGlobalVar::Type::Number:
+                global_node["Value"] = global.number; break;
+            case LuaGlobalVar::Type::String:
+                global_node["Value"] = global.string; break;
+        }
+
+        node["Lua Script"]["Global Vars"].push_back(global_node);
+    }
 }

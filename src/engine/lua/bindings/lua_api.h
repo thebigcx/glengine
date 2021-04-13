@@ -16,16 +16,9 @@ public:
     static void register_gameobject_functions(lua_State* l);
     static void register_input_functions(lua_State* l);
     static void register_transform_functions(lua_State* l);
-    static void register_vector3_functions(lua_State* l);
 
     static Node* find_node(lua_State* l);
     static Camera* find_main_camera();
-
-    static int lua_vector3_new(lua_State* l);
-    static int lua_vector3_add(lua_State* l);
-    static int lua_vector3_sub(lua_State* l);
-    static int lua_vector3_mul(lua_State* l);
-    static int lua_vector3_div(lua_State* l);
 
     static int lua_get_this(lua_State* l);
     static int lua_get_gameobject_field(lua_State* l);
@@ -39,6 +32,11 @@ public:
     static int lua_create_component(lua_State* l);
     static int lua_remove_component(lua_State* l);
     static int lua_get_component_owner(lua_State* l);
+
+    static int lua_switch_scene(lua_State* l);
+    static int lua_get_scene_field(lua_State* l);
+    static int lua_scene_get_root_node(lua_State* l);
+    static int lua_scene_get_current(lua_State* l);
 
     static int lua_get_transform_field(lua_State* l);
 

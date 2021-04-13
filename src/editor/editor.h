@@ -22,7 +22,7 @@ public:
     void open_scene(const std::string& path);
 
 private:
-    std::shared_ptr<Scene> m_current_scene = nullptr;
+    //std::shared_ptr<Scene> m_current_scene = nullptr;
 
     std::shared_ptr<Framebuffer> m_framebuffer;
 

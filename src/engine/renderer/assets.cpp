@@ -20,7 +20,7 @@ std::weak_ptr<Texture> AssetManager::get_texture(const std::string& path)
         return m_textures.get(path);
     }
 
-    std::shared_ptr<Texture> texture = std::make_shared<Texture>(path);
+    std::shared_ptr<Texture> texture = Deserializer::deserialize_texture(path);
     m_textures.add(path, texture);
     return texture;
 }

@@ -5,7 +5,7 @@
 
 enum class SelectionType
 {
-    Node, Material
+    Node, Material, Texture
 };
 
 class Scene;
@@ -14,18 +14,20 @@ class Node;
 class InspectorPanel
 {
 public:
-    static void set_scene(const std::shared_ptr<Scene>& scene);
+    static void set_scene(Scene* scene);
     static void imgui_render();
 
     static void render_node_inspector();
     static void render_material_inspector();
+    static void render_texture_inspector();
 
     static inline Node* node_selection;
     static inline std::string material_selection;
+    static inline std::string texture_selection;
     static inline SelectionType selection_type;
 
 private:
-    static inline std::weak_ptr<Scene> m_scene_context;
+    static inline Scene* m_scene_context;
 
     template<typename T>
     static void add_component(Node* node, const std::string& name); // Add component menu item

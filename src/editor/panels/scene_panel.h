@@ -8,11 +8,11 @@ class Node;
 class ScenePanel
 {
 public:
-    static void set_scene(const std::shared_ptr<Scene>& scene);
+    static void set_scene(Scene* scene);
     static void imgui_render();
 
 private:
-    static inline std::weak_ptr<Scene> m_scene_context;
+    static inline Scene* m_scene_context;
 
     static void render_node(Node* node);
 

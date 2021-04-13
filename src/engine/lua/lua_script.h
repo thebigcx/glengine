@@ -24,10 +24,10 @@ public:
 
     std::string name = "";
     
-    float number;
-    std::string string;
-    bool boolean;
-    void* userdata;
+    float number = 0;
+    std::string string = "";
+    bool boolean = false;
+    void* userdata = nullptr;
 };
 
 class LuaScript : public Component

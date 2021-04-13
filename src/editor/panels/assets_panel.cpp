@@ -20,7 +20,11 @@ void TextureView::imgui_render()
 
         if (ext == ".png" || ext == ".jpeg" || ext == ".jpg" || ext == ".tga")
         {
-            ImGui::Image(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0});
+            if (ImGui::ImageButton(reinterpret_cast<void*>(AssetManager::get_instance()->get_texture(asset.path()).lock()->get_id()), ImVec2{80, 80}, ImVec2{0, 1}, ImVec2{1, 0}))
+            {
+                InspectorPanel::selection_type = SelectionType::Texture;
+                InspectorPanel::texture_selection = asset.path().string();
+            }
 
             if (ImGui::IsItemHovered())
             {
@@ -183,6 +187,7 @@ void SceneView::imgui_render()
 {
     for (auto& asset : std::filesystem::directory_iterator("assets"))
     {
+        ImGui::PushID(asset.path().c_str());
         auto ext = asset.path().extension();
 
         if (ext == ".scene")
@@ -194,6 +199,7 @@ void SceneView::imgui_render()
                 static_cast<Editor*>(Application::get_instance())->open_scene(asset.path().string());
             }
         }
+        ImGui::PopID();
     }
 }
 

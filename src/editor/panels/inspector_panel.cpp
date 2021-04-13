@@ -123,6 +123,20 @@ void InspectorPanel::render_material_inspector()
     }
 }
 
+void InspectorPanel::render_texture_inspector()
+{
+    std::weak_ptr<Texture> texture = AssetManager::get_instance()->get_texture(texture_selection);
+
+    bool is_srgb = texture.lock()->is_srgb();
+
+    ImGui::Checkbox("Is SRGB", &is_srgb);
+    if (is_srgb != texture.lock()->is_srgb())
+    {
+        // Reload texture
+        texture.lock()->reload(texture.lock()->get_path(), is_srgb);
+    }
+}
+
 template<typename T>
 void InspectorPanel::add_component(Node* node, const std::string& name)
 {
@@ -135,7 +149,7 @@ void InspectorPanel::add_component(Node* node, const std::string& name)
     }
 }
 
-void InspectorPanel::set_scene(const std::shared_ptr<Scene>& scene)
+void InspectorPanel::set_scene(Scene* scene)
 {
     m_scene_context = scene;
 }
@@ -143,11 +157,15 @@ void InspectorPanel::set_scene(const std::shared_ptr<Scene>& scene)
 void InspectorPanel::imgui_render()
 {
     ImGui::Begin(ICON_FK_CUBE " Inspector");
+
+    // TODO: use strategy design pattern
     
     if (selection_type == SelectionType::Node)
         render_node_inspector();
     else if (selection_type == SelectionType::Material)
         render_material_inspector();
+    else if (selection_type == SelectionType::Texture)
+        render_texture_inspector();
 
     ImGui::End();
 }
@@ -422,7 +440,7 @@ void InspectorPanel::draw_components(Node* node)
             if (ImGui::InputText("##value", buffer, 128, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 var.string = buffer;
-                
+
                 switch (var.type)
                 {
                     case LuaGlobalVar::Type::Number:

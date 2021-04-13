@@ -19,7 +19,7 @@ void Sprite::on_render()
         else
         {
             Vector2f uv1(0, 0);
-            Vector2f uv2 = m_texture.lock()->get_size();
+            Vector2f uv2(1, 1);
 
             Renderer2D::render_sprite(m_texture.lock(), m_owner->get_transform().get_world_transform(), m_color, uv1, uv2);
         }

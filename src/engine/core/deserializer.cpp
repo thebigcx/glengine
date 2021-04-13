@@ -9,9 +9,25 @@
 #include "engine/renderer/mesh.h"
 #include "engine/renderer/material.h"
 #include "engine/renderer/mesh_renderer.h"
+#include "engine/renderer/texture.h"
 
 #include <yaml-cpp/yaml.h>
 #include <iostream>
+#include <filesystem>
+
+std::shared_ptr<Texture> Deserializer::deserialize_texture(const std::string& path)
+{
+    if (!std::filesystem::exists(path + ".meta"))
+    {
+        return std::make_shared<Texture>(path);
+    }
+
+    YAML::Node root = YAML::LoadFile(path + ".meta");
+
+    bool is_srgb = root["Is SRGB"].as<bool>();
+
+    return std::make_shared<Texture>(path, is_srgb);
+}
 
 std::shared_ptr<Material> Deserializer::deserialize_material(const std::string& name)
 {
@@ -151,22 +167,22 @@ static void deserialize_gameobject(YAML::Node node, Node* parent)
 
     if (node["Children"])
     {
-        for (auto iter : node["Children"])
+        for (int i = 0; i < node["Children"].size(); i++)
         {
-            deserialize_gameobject(node["Children"][iter.first.as<std::string>()], go);
+            deserialize_gameobject(node["Children"][i]["Game Object"], go);
         }
     }
 }
 
-std::shared_ptr<Scene> Deserializer::deserialize_scene(const std::string& path)
+Scene* Deserializer::deserialize_scene(const std::string& path)
 {
     YAML::Node root = YAML::LoadFile(path);
 
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    Scene* scene = new Scene();
 
-    for (auto iter : root["Game Objects"])
+    for (int i = 0; i < root["Game Objects"].size(); i++)
     {
-        deserialize_gameobject(root["Game Objects"][iter.first.as<std::string>()], scene->get_root_node());
+        deserialize_gameobject(root["Game Objects"][i]["Game Object"], scene->get_root_node());
     }
 
     return scene;

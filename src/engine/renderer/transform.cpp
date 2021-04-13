@@ -1,6 +1,7 @@
 #include "engine/renderer/transform.h"
 #include "engine/scene/node.h"
 #include "engine/maths/quaternion.h"
+#include "engine/maths/math.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -40,7 +41,7 @@ void Transform::set_scale(const Vector3f& scale)
 Matrix4f Transform::get_world_transform() const
 {
     Matrix4f local = Matrix4f::translate(Matrix4f(1.0f), m_translation)
-                   * Quaternionf::to_matrix4(Quaternionf(m_rotation))
+                   * Quaternionf::to_matrix4(Quaternionf(Math::to_radians(m_rotation)))
                    * Matrix4f::scale(Matrix4f(1.0f), m_scale);
 
     if (!m_owner->get_parent())
@@ -56,7 +57,7 @@ Matrix4f Transform::get_world_transform() const
 Matrix4f Transform::get_local_transform() const
 {
     return Matrix4f::translate(Matrix4f(1.0f), m_translation)
-         * Quaternionf::to_matrix4(Quaternionf(m_rotation))
+         * Quaternionf::to_matrix4(Quaternionf(Math::to_radians(m_rotation)))
          * Matrix4f::scale(Matrix4f(1.0f), m_scale);
 }
 

@@ -1,47 +1,34 @@
 Game Objects:
-  Test:
-    Name: Test
-    Transform:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    Components:
-      Mesh Renderer:
-        Material: None
-      Mesh:
-        Path: assets/test.fbx
-      Lua Script:
-        Path: assets/script3.lua
-      Sprite:
-        Texture: None
-        Color: [1, 1, 1]
-        UV 1: [0, 0]
-        UV 2: [0, 0]
-        Use UVs: false
-    Children:
-      Child:
-        Name: Child
-        Transform:
-          Translation: [0, 0, 0]
-          Rotation: [0, 0, 0]
-          Scale: [1, 1, 1]
-  Camera:
-    Name: Camera
-    Transform:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    Components:
-      Lua Script:
-        Path: assets/fps_camera.lua
-      Camera:
-        Main: true
-        Projection Type: Orthographic
-        Orthographic:
-          Size: 10
-          Near Clip: -1
-          Far Clip: 1
-        Perspective:
-          FOV: 45
-          Near Clip: 0.100000001
-          Far Clip: 100
+  - Game Object:
+      Name: Sprite
+      Transform:
+        Translation: [0, 0, 0]
+        Rotation: [0, 0, 0]
+        Scale: [1, 1, 1]
+      Components:
+        Lua Script:
+          Path: assets/script3.lua
+        Sprite:
+          Texture: None
+          Color: [1, 1, 1]
+          UV 1: [0, 0]
+          UV 2: [0, 0]
+          Use UVs: false
+  - Game Object:
+      Name: Camera
+      Transform:
+        Translation: [0, 0, 0]
+        Rotation: [0, 0, 0]
+        Scale: [1, 1, 1]
+      Components:
+        Camera:
+          Main: true
+          Projection Type: Orthographic
+          Orthographic:
+            Size: 10
+            Near Clip: -1
+            Far Clip: 1
+          Perspective:
+            FOV: 45
+            Near Clip: 0.100000001
+            Far Clip: 100

@@ -1,5 +1,5 @@
 function on_start()
-    print(hello)
+    Scene.switch_scene("assets/temp.scene")
 end
 
 function on_update(dt)

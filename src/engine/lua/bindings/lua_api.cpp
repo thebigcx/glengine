@@ -11,6 +11,7 @@
 #include "engine/renderer/assets.h"
 #include "engine/renderer/mesh.h"
 #include "engine/renderer/mesh_renderer.h"
+#include "engine/core/deserializer.h"
 
 #include <iostream>
 
@@ -240,6 +241,53 @@ int LuaAPI::lua_mesh_renderer_set_material(lua_State* l)
     return 0;
 }
 
+// TODO: fix this function
+int LuaAPI::lua_switch_scene(lua_State* l)
+{
+    const char* path = lua_tostring(l, -1);
+
+    //Scene::current_scene = Deserializer::deserialize_scene(path);
+    //Scene::current_scene->on_start();
+    return 0;
+}
+
+int LuaAPI::lua_get_scene_field(lua_State* l)
+{
+    const char* field = lua_tostring(l, -1);
+
+    lua_getglobal(l, "Scene");
+    lua_pushstring(l, field);
+    lua_rawget(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_scene_get_root_node(lua_State* l)
+{
+    Scene* scene = *(Scene**)lua_touserdata(l, -1);
+    Node* node = scene->get_root_node();
+
+    Node** ptr = (Node**)lua_newuserdata(l, 8);
+    *ptr = node;
+
+    luaL_getmetatable(l, "GameObjectMetaTable");
+    lua_setmetatable(l, -2);
+
+    return 1;
+}
+
+int LuaAPI::lua_scene_get_current(lua_State* l)
+{
+    Scene* scene = Scene::current_scene;
+    Scene** ptr = (Scene**)lua_newuserdata(l, 8);
+    *ptr = scene;
+
+    luaL_getmetatable(l, "SceneMetaTable");
+    lua_setmetatable(l, -2);
+
+    return 1;
+}
+
 void LuaAPI::register_api(const LuaScript& script)
 {
     lua_State* l = script.get_lua_state();
@@ -247,7 +295,6 @@ void LuaAPI::register_api(const LuaScript& script)
     register_gameobject_functions(l);
     register_input_functions(l);
     register_transform_functions(l);
-    //register_vector3_functions(l);
 
     lua_getglobal(l, "require");
     lua_pushstring(l, "src/engine/lua/bindings/native/vector3");
@@ -318,6 +365,21 @@ void LuaAPI::register_api(const LuaScript& script)
     luaL_newmetatable(l, "MeshRendererMetaTable");
     lua_pushstring(l, "__index");
     lua_pushcfunction(l, lua_get_mesh_renderer_field);
+    lua_settable(l, -3);
+
+    lua_newtable(l);
+    lua_pushvalue(l, lua_gettop(l));
+    lua_setglobal(l, "Scene");
+    lua_pushcfunction(l, lua_scene_get_current);
+    lua_setfield(l, -2, "get_current");
+    lua_pushcfunction(l, lua_switch_scene);
+    lua_setfield(l, -2, "switch_scene");
+    lua_pushcfunction(l, lua_scene_get_root_node);
+    lua_setfield(l, -2, "get_root_gameobject");
+
+    luaL_newmetatable(l, "SceneMetaTable");
+    lua_pushstring(l, "__index");
+    lua_pushcfunction(l, lua_get_scene_field);
     lua_settable(l, -3);
 
     lua_newtable(l);
