@@ -41,7 +41,7 @@ public:
     void on_update(float dt) override;
     void on_destroy() override;
 
-    void load_script(const std::string& script);
+    void set_script(const std::string& script);
 
     lua_State* get_lua_state() const { return m_lua; }
 

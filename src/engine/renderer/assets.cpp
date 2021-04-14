@@ -2,6 +2,7 @@
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
 #include "engine/renderer/material.h"
+#include "engine/scene/scene.h"
 #include "engine/audio/audio.h"
 #include "engine/core/deserializer.h"
 
@@ -11,6 +12,26 @@ void AssetManager::flush()
 {
     m_textures.flush();
     m_shaders.flush();
+}
+
+void AssetManager::load_asset_folder(const std::string& path)
+{
+    for (auto& asset : std::filesystem::directory_iterator("assets"))
+    {
+        auto ext = asset.path().extension();
+
+        if (ext == ".material")
+        {
+            auto material = Deserializer::deserialize_material(asset.path());
+            material->set_name(asset.path().stem());
+            m_materials.add(asset.path().stem(), material);
+        }
+        else if (ext == ".scene")
+        {
+            auto scene = Deserializer::deserialize_scene(asset.path());
+            m_scenes.add(asset.path().stem(), scene);
+        }
+    }
 }
 
 std::weak_ptr<Texture> AssetManager::get_texture(const std::string& path)
@@ -64,4 +85,46 @@ std::weak_ptr<Material> AssetManager::get_material(const std::string& name)
     }
 
     return std::shared_ptr<Material>(nullptr);
+}
+
+std::weak_ptr<Scene> AssetManager::get_scene(const std::string& name)
+{
+    if (m_scenes.exists(name))
+    {
+        return m_scenes.get(name);
+    }
+
+    if (std::filesystem::exists("assets/" + name + ".scene"))
+    {
+        auto scene = Deserializer::deserialize_scene(name);
+        m_scenes.add(name, std::shared_ptr<Scene>(scene));
+        return m_scenes.get(name);
+    }
+
+    return std::shared_ptr<Scene>(nullptr);
+}
+
+std::weak_ptr<Material> AssetManager::create_material(const std::string& name)
+{
+    if (m_materials.exists(name))
+    {
+        return m_materials.get(name);
+    }
+
+    auto material = std::make_shared<Material>();
+    material->set_name(name); // TODO: might not need name stored in material
+    m_materials.add(name, material);
+    return material;
+}
+
+std::weak_ptr<Scene> AssetManager::create_scene(const std::string& name)
+{
+    if (m_scenes.exists(name))
+    {
+        return m_scenes.get(name);
+    }
+
+    auto scene = std::make_shared<Scene>();
+    m_scenes.add(name, scene);
+    return scene;
 }

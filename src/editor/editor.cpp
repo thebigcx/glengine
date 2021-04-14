@@ -34,28 +34,11 @@ Editor::Editor()
 
 void Editor::on_start()
 {
-    //m_current_scene = std::make_shared<Scene>();
-    Scene::current_scene = new Scene();
-
-    // TEST
-    /*auto node = m_current_scene->create_node("Test");
-    node->create_child("Child");
-    node->create_component<Sprite>();
-    node->create_component<LuaScript>("assets/script3.lua");
-    node->create_component<Mesh>();
-
-    auto mrender = node->create_component<MeshRenderer>();
-
-    node->get_component<Mesh>()->load("assets/test.fbx");
-    auto cam_node = m_current_scene->create_node("Camera");
-    auto camera = cam_node->create_component<Camera>();
-    Camera::set_main_camera(camera);
-    node->get_transform().set_scale(Vector3f(1, 1, 1));*/
+    Scene::current_scene = std::make_shared<Scene>();
 
     ImGuiLayer::init();
     ScenePanel::set_scene(Scene::current_scene);
     InspectorPanel::set_scene(Scene::current_scene);
-
 
     // TODO: fix this. Make a function.
     m_framebuffer = std::make_shared<Framebuffer>(Application::get_instance()->get_window()->get_width(), Application::get_instance()->get_window()->get_height());
@@ -77,8 +60,12 @@ void Editor::on_update(float dt)
             m_is_playing = false;
             Scene::current_scene->on_destroy();
 
-            open_scene("assets/temp.scene");
-            // TODO: Need to make a copy and restore it here
+            Scene::current_scene = Deserializer::deserialize_scene("assets/temp.scene"); // TODO: serialize in string rather than file
+
+            ScenePanel::set_scene(Scene::current_scene);
+            InspectorPanel::set_scene(Scene::current_scene);
+
+            InspectorPanel::node_selection = nullptr;
         }
 
         return;
@@ -179,9 +166,6 @@ void Editor::on_update(float dt)
 
 void Editor::on_destroy()
 {
-    if (Scene::current_scene)
-        delete Scene::current_scene;
-        
     ImGuiLayer::destroy();
 }
 
@@ -227,12 +211,9 @@ void Editor::render_menu_bar()
     }
 }
 
-void Editor::open_scene(const std::string& path)
+void Editor::open_scene(const std::string& name)
 {
-    if (Scene::current_scene)
-        delete Scene::current_scene;
-
-    Scene::current_scene = Deserializer::deserialize_scene(path);
+    Scene::current_scene = AssetManager::get_instance()->get_scene(name).lock();
 
     ScenePanel::set_scene(Scene::current_scene);
     InspectorPanel::set_scene(Scene::current_scene);

@@ -278,7 +278,7 @@ int LuaAPI::lua_scene_get_root_node(lua_State* l)
 
 int LuaAPI::lua_scene_get_current(lua_State* l)
 {
-    Scene* scene = Scene::current_scene;
+    Scene* scene = Scene::current_scene.get();
     Scene** ptr = (Scene**)lua_newuserdata(l, 8);
     *ptr = scene;
 

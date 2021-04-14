@@ -15,5 +15,5 @@ class Deserializer
 public:
     static std::shared_ptr<Texture> deserialize_texture(const std::string& path);
     static std::shared_ptr<Material> deserialize_material(const std::string& path);
-    static Scene* deserialize_scene(const std::string& path);
+    static std::shared_ptr<Scene> deserialize_scene(const std::string& path);
 };

@@ -31,10 +31,9 @@ std::shared_ptr<Texture> Deserializer::deserialize_texture(const std::string& pa
 
 std::shared_ptr<Material> Deserializer::deserialize_material(const std::string& name)
 {
-    YAML::Node root = YAML::LoadFile("assets/" + name + ".material");
+    YAML::Node root = YAML::LoadFile(name);
 
     auto material = std::make_shared<Material>();
-    material->set_name(name);
 
     if (root["Shader"].as<std::string>() != "None")
         material->set_shader(AssetManager::get_instance()->get_shader(root["Shader"].as<std::string>()));
@@ -128,7 +127,7 @@ static void deserialize_gameobject(YAML::Node node, Node* parent)
     {
         LuaScript* script = go->create_component<LuaScript>();
 
-        script->load_script(node["Components"]["Lua Script"]["Path"].as<std::string>());
+        script->set_script(node["Components"]["Lua Script"]["Path"].as<std::string>());
     }
 
     if (node["Components"]["Audio Source"])
@@ -174,11 +173,11 @@ static void deserialize_gameobject(YAML::Node node, Node* parent)
     }
 }
 
-Scene* Deserializer::deserialize_scene(const std::string& path)
+std::shared_ptr<Scene> Deserializer::deserialize_scene(const std::string& path)
 {
     YAML::Node root = YAML::LoadFile(path);
 
-    Scene* scene = new Scene();
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 
     for (int i = 0; i < root["Game Objects"].size(); i++)
     {

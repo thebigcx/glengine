@@ -14,7 +14,7 @@ class Node;
 class InspectorPanel
 {
 public:
-    static void set_scene(Scene* scene);
+    static void set_scene(const std::shared_ptr<Scene>& scene);
     static void imgui_render();
 
     static void render_node_inspector();
@@ -27,7 +27,7 @@ public:
     static inline SelectionType selection_type;
 
 private:
-    static inline Scene* m_scene_context;
+    static inline std::shared_ptr<Scene> m_scene_context;
 
     template<typename T>
     static void add_component(Node* node, const std::string& name); // Add component menu item

@@ -63,5 +63,7 @@ std::shared_ptr<AudioBuffer> AudioBuffer::load(const std::string& path)
         return std::make_shared<AudioBuffer>(load_mp3(path), path);
     else
         std::cout << "Unsupported audio file format: " << extension << "\n";
+
+    return nullptr;
 }
 

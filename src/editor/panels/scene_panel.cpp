@@ -10,12 +10,11 @@
 
 #include "imgui/imgui.h"
 
-void ScenePanel::set_scene(Scene* scene)
+void ScenePanel::set_scene(const std::shared_ptr<Scene>& scene)
 {
     m_scene_context = scene;
 }
 
-// TODO: doesn't quite work
 void ScenePanel::render_node(Node* node)
 {
     ImGui::PushID(node); // Memory location of node will be unique

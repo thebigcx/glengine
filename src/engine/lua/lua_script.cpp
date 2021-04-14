@@ -78,7 +78,7 @@ void LuaScript::on_update(float dt)
     lua_call(m_lua, 1, 0);
 }
 
-void LuaScript::load_script(const std::string& script)
+void LuaScript::set_script(const std::string& script)
 {
     m_path = script;
 }

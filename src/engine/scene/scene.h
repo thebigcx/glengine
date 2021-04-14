@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 class Node;
 class Event;
@@ -28,7 +29,7 @@ public:
 
     void on_event(Event& e);
 
-    static inline Scene* current_scene = nullptr;
+    static inline std::shared_ptr<Scene> current_scene = nullptr;
 
 private:
     Node* m_root_node;

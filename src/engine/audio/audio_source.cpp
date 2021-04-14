@@ -6,13 +6,12 @@
 
 AudioSource::AudioSource()
 {
-    alGenSources(1, &m_id);
+    
 }
 
-AudioSource::AudioSource(const std::shared_ptr<AudioBuffer>& buffer)
+void AudioSource::on_start()
 {
     alGenSources(1, &m_id);
-    set_buffer(buffer);
 }
 
 void AudioSource::on_destroy()

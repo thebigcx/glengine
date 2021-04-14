@@ -149,7 +149,7 @@ void InspectorPanel::add_component(Node* node, const std::string& name)
     }
 }
 
-void InspectorPanel::set_scene(Scene* scene)
+void InspectorPanel::set_scene(const std::shared_ptr<Scene>& scene)
 {
     m_scene_context = scene;
 }
@@ -259,7 +259,7 @@ void InspectorPanel::draw_components(Node* node)
             if (payload)
             {
                 std::string path = (const char*)payload->Data;
-                sprite->set_texture(AssetManager::get_instance()->get_texture(path)); // TODO: Shouldn't lock the weak ptr
+                sprite->set_texture(AssetManager::get_instance()->get_texture(path));
             }
         }
         

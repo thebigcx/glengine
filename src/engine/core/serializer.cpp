@@ -44,7 +44,7 @@ static void serialize_game_object(YAML::Node node, Node* go)
     node.push_back(gameobject);
 }
 
-void Serializer::serialize_scene(Scene* scene, const std::string& path)
+void Serializer::serialize_scene(const std::shared_ptr<Scene>& scene, const std::string& path)
 {
     YAML::Node root;
 

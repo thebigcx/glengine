@@ -67,8 +67,8 @@ public:
 
 public:
     AudioSource();
-    AudioSource(const std::shared_ptr<AudioBuffer>& buffer);
 
+    void on_start() override;
     void on_destroy() override;
     void on_transform_change() override;
 
@@ -87,5 +87,5 @@ public:
 private:
     uint32_t m_id;
 
-    std::shared_ptr<AudioBuffer> m_buffer;
+    std::shared_ptr<AudioBuffer> m_buffer = nullptr;
 };

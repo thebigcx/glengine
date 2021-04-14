@@ -51,6 +51,7 @@ class Texture;
 class Shader;
 class AudioBuffer;
 class Material;
+class Scene;
 
 class AssetManager
 {
@@ -63,16 +64,24 @@ public:
 
     void flush();
 
+    void load_asset_folder(const std::string& path);
+
     AssetCache<Material>& get_material_cache() { return m_materials; }
+    AssetCache<Scene>& get_scene_cache() { return m_scenes; }
 
     std::weak_ptr<Texture> get_texture(const std::string& path);
     std::weak_ptr<Shader> get_shader(const std::string& path);
     std::weak_ptr<AudioBuffer> get_audio_buffer(const std::string& path);
     std::weak_ptr<Material> get_material(const std::string& name);
+    std::weak_ptr<Scene> get_scene(const std::string& name);
+
+    std::weak_ptr<Material> create_material(const std::string& name);
+    std::weak_ptr<Scene> create_scene(const std::string& name);
 
 private:
     AssetCache<Texture> m_textures;
     AssetCache<Shader> m_shaders;
     AssetCache<AudioBuffer> m_audio_buffers;
     AssetCache<Material> m_materials;
+    AssetCache<Scene> m_scenes;
 };
