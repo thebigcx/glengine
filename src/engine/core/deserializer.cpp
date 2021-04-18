@@ -166,7 +166,7 @@ static void deserialize_gameobject(YAML::Node node, Node* parent)
 
     if (node["Children"])
     {
-        for (int i = 0; i < node["Children"].size(); i++)
+        for (size_t i = 0; i < node["Children"].size(); i++)
         {
             deserialize_gameobject(node["Children"][i]["Game Object"], go);
         }
@@ -179,7 +179,7 @@ std::shared_ptr<Scene> Deserializer::deserialize_scene(const std::string& path)
 
     std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 
-    for (int i = 0; i < root["Game Objects"].size(); i++)
+    for (size_t i = 0; i < root["Game Objects"].size(); i++)
     {
         deserialize_gameobject(root["Game Objects"][i]["Game Object"], scene->get_root_node());
     }

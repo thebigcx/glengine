@@ -403,7 +403,7 @@ void InspectorPanel::draw_components(Node* node)
             if (payload)
             {
                 std::string path = (const char*)payload->Data;
-                node->get_component<LuaScript>()->load_script(path);
+                node->get_component<LuaScript>()->set_script(path);
             }
         }
 

@@ -8,3 +8,5 @@ Game Objects:
       Components:
         Audio Source:
           Path: assets/test.mp3
+        Lua Script:
+          Path: assets/script2.lua

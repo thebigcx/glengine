@@ -29,7 +29,7 @@ public:
 
     void on_event(Event& e);
 
-    static inline std::shared_ptr<Scene> current_scene = nullptr;
+    static inline std::weak_ptr<Scene> current_scene;
 
 private:
     Node* m_root_node;

@@ -39,6 +39,26 @@ static void dumpstack (lua_State *L) {
   }
 }
 
+void LuaAPI::create_vector3(lua_State* l, float x, float y, float z)
+{
+    lua_newtable(l);
+
+    lua_pushstring(l, "x");
+    lua_pushnumber(l, x);
+    lua_settable(l, -3);
+
+    lua_pushstring(l, "y");
+    lua_pushnumber(l, y);
+    lua_settable(l, -3);
+
+    lua_pushstring(l, "z");
+    lua_pushnumber(l, z);
+    lua_settable(l, -3);
+
+    luaL_getmetatable(l, "Vector3MetaTable");
+    lua_setmetatable(l, -2);
+}
+
 int LuaAPI::lua_dumpstack(lua_State* l)
 {
     dumpstack(l);
@@ -278,7 +298,7 @@ int LuaAPI::lua_scene_get_root_node(lua_State* l)
 
 int LuaAPI::lua_scene_get_current(lua_State* l)
 {
-    Scene* scene = Scene::current_scene.get();
+    Scene* scene = Scene::current_scene.lock().get();
     Scene** ptr = (Scene**)lua_newuserdata(l, 8);
     *ptr = scene;
 

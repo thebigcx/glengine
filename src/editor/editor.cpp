@@ -2,18 +2,11 @@
 #include "editor/imgui_layer.h"
 #include "engine/scene/scene.h"
 #include "engine/scene/node.h"
-#include "engine/renderer/sprite.h"
 #include "engine/renderer/renderer_2d.h"
 #include "engine/renderer/camera.h"
 #include "engine/core/event.h"
-#include "engine/renderer/texture.h"
 #include "engine/renderer/framebuffer.h"
-#include "engine/renderer/mesh.h"
-#include "engine/renderer/mesh_renderer.h"
-#include "engine/renderer/material.h"
 #include "engine/renderer/assets.h"
-#include "engine/lua/lua_script.h"
-#include "engine/audio/audio.h"
 #include "engine/core/serializer.h"
 #include "engine/core/deserializer.h"
 
@@ -34,11 +27,11 @@ Editor::Editor()
 
 void Editor::on_start()
 {
-    Scene::current_scene = std::make_shared<Scene>();
+    Scene::current_scene = AssetManager::get_instance()->get_scene("test");
 
     ImGuiLayer::init();
-    ScenePanel::set_scene(Scene::current_scene);
-    InspectorPanel::set_scene(Scene::current_scene);
+    ScenePanel::set_scene(Scene::current_scene.lock());
+    InspectorPanel::set_scene(Scene::current_scene.lock());
 
     // TODO: fix this. Make a function.
     m_framebuffer = std::make_shared<Framebuffer>(Application::get_instance()->get_window()->get_width(), Application::get_instance()->get_window()->get_height());
@@ -52,18 +45,18 @@ void Editor::on_update(float dt)
         auto& window = Application::get_instance()->get_window();
         glViewport(0, 0, window->get_width(), window->get_height());
 
-        Scene::current_scene->on_update(dt);
-        Scene::current_scene->on_render();
+        Scene::current_scene.lock()->on_update(dt);
+        Scene::current_scene.lock()->on_render();
         
         if (Keyboard::is_key_pressed(Key::Escape))
         {
             m_is_playing = false;
-            Scene::current_scene->on_destroy();
+            Scene::current_scene.lock()->on_destroy();
 
-            Scene::current_scene = Deserializer::deserialize_scene("assets/temp.scene"); // TODO: serialize in string rather than file
+            Scene::current_scene = AssetManager::get_instance()->get_scene("temp"); // TODO: serialize in string rather than file
 
-            ScenePanel::set_scene(Scene::current_scene);
-            InspectorPanel::set_scene(Scene::current_scene);
+            ScenePanel::set_scene(Scene::current_scene.lock());
+            InspectorPanel::set_scene(Scene::current_scene.lock());
 
             InspectorPanel::node_selection = nullptr;
         }
@@ -71,13 +64,13 @@ void Editor::on_update(float dt)
         return;
     }
 
-    Scene::current_scene->on_editor_update(dt);
+    Scene::current_scene.lock()->on_editor_update(dt);
     m_camera.on_update(dt);
 
     m_framebuffer->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Scene::current_scene->on_editor_render(m_camera);
+    Scene::current_scene.lock()->on_editor_render(m_camera);
 
     m_framebuffer->unbind();
 
@@ -108,8 +101,8 @@ void Editor::on_update(float dt)
     if (ImGui::Button(ICON_FK_PLAY))
     {
         m_is_playing = true;
-        Serializer::serialize_scene(Scene::current_scene, "assets/temp.scene");
-        Scene::current_scene->on_start();
+        Serializer::serialize_scene(Scene::current_scene.lock(), "assets/temp.scene");
+        Scene::current_scene.lock()->on_start();
     }
     ImGui::End();
 
@@ -125,7 +118,7 @@ void Editor::on_update(float dt)
         m_framebuffer->resize(size.x, size.y);
         m_camera.on_viewport_resize(size.x, size.y);
         WindowResizeEvent e(size.x, size.y);
-        Scene::current_scene->on_event(e);
+        Scene::current_scene.lock()->on_event(e);
     }
     
     ImGui::Image(reinterpret_cast<void*>(m_framebuffer->get_color_texture()), size, ImVec2{0, 1}, ImVec2{1, 0});
@@ -189,7 +182,7 @@ void Editor::on_event(Event& e)
 
     if (e.get_type() != EventType::WindowResize || m_is_playing) // Viewport is different to window with ImGui
     {
-        Scene::current_scene->on_event(e);
+        Scene::current_scene.lock()->on_event(e);
     }
 }
 
@@ -201,7 +194,7 @@ void Editor::render_menu_bar()
         {
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
-                Serializer::serialize_scene(Scene::current_scene, "assets/test.scene");
+                Serializer::serialize_scene(Scene::current_scene.lock(), "assets/test.scene");
             }
 
             ImGui::EndMenu();
@@ -213,10 +206,11 @@ void Editor::render_menu_bar()
 
 void Editor::open_scene(const std::string& name)
 {
-    Scene::current_scene = AssetManager::get_instance()->get_scene(name).lock();
+    Scene::current_scene = AssetManager::get_instance()->get_scene(name);
+    //Scene::current_scene = Deserializer::deserialize_scene("assets/" + name + ".scene");
 
-    ScenePanel::set_scene(Scene::current_scene);
-    InspectorPanel::set_scene(Scene::current_scene);
+    ScenePanel::set_scene(Scene::current_scene.lock());
+    InspectorPanel::set_scene(Scene::current_scene.lock());
 
     InspectorPanel::node_selection = nullptr;
 }

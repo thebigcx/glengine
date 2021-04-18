@@ -3,9 +3,9 @@
 #include "engine/renderer/mesh.h"
 #include "engine/renderer/renderer_3d.h"
 #include "engine/renderer/material.h"
+#include "engine/core/serializer.h"
 
 #include <glad/glad.h>
-#include <yaml-cpp/yaml.h>
 
 void MeshRenderer::on_render()
 {
@@ -25,8 +25,5 @@ void MeshRenderer::on_render()
 
 void MeshRenderer::serialize(YAML::Node& node)
 {
-    if (m_material.lock())
-        node["Mesh Renderer"]["Material"] = m_material.lock()->get_name();
-    else
-        node["Mesh Renderer"]["Material"] = "None";
+    Serializer::serialize_mesh_renderer(node, this);
 }

@@ -27,7 +27,7 @@ public:
     static inline SelectionType selection_type;
 
 private:
-    static inline std::shared_ptr<Scene> m_scene_context;
+    static inline std::weak_ptr<Scene> m_scene_context;
 
     template<typename T>
     static void add_component(Node* node, const std::string& name); // Add component menu item

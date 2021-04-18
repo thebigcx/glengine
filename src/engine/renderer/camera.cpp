@@ -5,8 +5,8 @@
 #include "engine/maths/quaternion.h"
 #include "engine/maths/math.h"
 #include "engine/core/application.h"
+#include "engine/core/serializer.h"
 
-#include <yaml-cpp/yaml.h>
 #include <iostream>
 
 Camera::Camera()
@@ -107,18 +107,5 @@ void Camera::set_main_camera(Camera* camera)
 
 void Camera::serialize(YAML::Node& node)
 {
-    node["Camera"]["Main"] = m_is_main_camera;
-
-    if (m_projection_type == CameraProjection::Orthographic)
-        node["Camera"]["Projection Type"] = "Orthographic";
-    else
-        node["Camera"]["Projection Type"] = "Perspective";
-
-    node["Camera"]["Orthographic"]["Size"] = m_ortho_data.size;
-    node["Camera"]["Orthographic"]["Near Clip"] = m_ortho_data.near_clip;
-    node["Camera"]["Orthographic"]["Far Clip"] = m_ortho_data.far_clip;
-
-    node["Camera"]["Perspective"]["FOV"] = m_perspective_data.fov;
-    node["Camera"]["Perspective"]["Near Clip"] = m_perspective_data.near_clip;
-    node["Camera"]["Perspective"]["Far Clip"] = m_perspective_data.far_clip;
+    Serializer::serialize_camera(node, this);
 }

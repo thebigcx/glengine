@@ -22,8 +22,6 @@ public:
     void open_scene(const std::string& name);
 
 private:
-    //std::shared_ptr<Scene> m_current_scene = nullptr;
-
     std::shared_ptr<Framebuffer> m_framebuffer;
 
     EditorCamera m_camera;

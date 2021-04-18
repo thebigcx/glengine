@@ -1,8 +1,8 @@
 #include "engine/audio/audio.h"
 #include "engine/scene/node.h"
+#include "engine/core/serializer.h"
 
 #include <AL/al.h>
-#include <yaml-cpp/yaml.h>
 
 AudioSource::AudioSource()
 {
@@ -12,6 +12,8 @@ AudioSource::AudioSource()
 void AudioSource::on_start()
 {
     alGenSources(1, &m_id);
+    if (m_buffer)
+        alSourcei(m_id, AL_BUFFER, m_buffer->get_id());
 }
 
 void AudioSource::on_destroy()
@@ -28,7 +30,6 @@ void AudioSource::on_transform_change()
 void AudioSource::set_buffer(const std::shared_ptr<AudioBuffer>& buffer)
 {
     m_buffer = buffer;
-    alSourcei(m_id, AL_BUFFER, buffer->get_id());
 }
 
 void AudioSource::play() const
@@ -71,8 +72,5 @@ AudioSource::State AudioSource::get_state() const
 
 void AudioSource::serialize(YAML::Node& node)
 {
-    if (m_buffer)
-        node["Audio Source"]["Path"] = m_buffer->get_path();
-    else
-        node["Audio Source"]["Path"] = "None";
+    Serializer::serialize_audio_source(node, this);
 }

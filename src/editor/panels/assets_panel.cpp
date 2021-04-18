@@ -185,7 +185,7 @@ void ShaderView::imgui_render()
 
 void SceneView::imgui_render()
 {
-    for (auto& scene : AssetManager::get_instance()->get_scene_cache().get_internal_list())
+    /*for (auto& scene : AssetManager::get_instance()->get_scene_cache().get_internal_list())
     {
         ImGui::PushID(scene.second.get());
 
@@ -197,8 +197,8 @@ void SceneView::imgui_render()
         }
 
         ImGui::PopID();
-    }
-/*
+    }*/
+
     for (auto& asset : std::filesystem::directory_iterator("assets"))
     {
         ImGui::PushID(asset.path().c_str());
@@ -206,16 +206,16 @@ void SceneView::imgui_render()
 
         if (ext == ".scene")
         {
-            ImGui::Text(asset.path().c_str());
+            ImGui::Text(asset.path().stem().c_str());
             ImGui::SameLine();
             if (ImGui::Button("Open"))
             {
-                static_cast<Editor*>(Application::get_instance())->open_scene(asset.path().string());
+                static_cast<Editor*>(Application::get_instance())->open_scene(asset.path().stem());
             }
         }
         ImGui::PopID();
     }
-*/
+
 }
 
 void AssetsPanel::imgui_render()

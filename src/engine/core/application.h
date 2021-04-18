@@ -11,7 +11,9 @@ class Application
     friend class Window;
 
 public:
-    void run();
+    virtual ~Application() {}
+
+    void run(const std::string& project);
 
     virtual void on_start() = 0;
     virtual void on_update(float dt) = 0;

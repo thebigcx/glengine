@@ -12,7 +12,7 @@ public:
     static void imgui_render();
 
 private:
-    static inline std::shared_ptr<Scene> m_scene_context;
+    static inline std::weak_ptr<Scene> m_scene_context;
 
     static void render_node(Node* node);
 

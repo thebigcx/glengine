@@ -2,9 +2,9 @@
 #include "engine/renderer/renderer_3d.h"
 #include "engine/scene/node.h"
 #include "engine/renderer/assets.h"
+#include "engine/core/serializer.h"
 
 #include <glad/glad.h>
-#include <yaml-cpp/yaml.h>
 
 Mesh::Mesh()
 {
@@ -52,5 +52,5 @@ void Mesh::load(const std::string& path)
 
 void Mesh::serialize(YAML::Node& node)
 {
-    node["Mesh"]["Path"] = m_path;
+    Serializer::serialize_mesh(node, this);
 }

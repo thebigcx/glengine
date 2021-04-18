@@ -1,8 +1,8 @@
 #include "engine/audio/audio.h"
 #include "engine/scene/node.h"
+#include "engine/core/serializer.h"
 
 #include <AL/al.h>
-#include <yaml-cpp/yaml.h>
 
 void AudioListener::set_main(AudioListener& listener)
 {
@@ -33,5 +33,5 @@ Vector3f AudioListener::get_position() const
 
 void AudioListener::serialize(YAML::Node& node)
 {
-    node["Audio Listener"]["Main"] = m_is_main_listener;
+    Serializer::serialize_audio_listener(node, this);
 }

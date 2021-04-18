@@ -16,5 +16,4 @@ static Vector<3, T> to_radians(const Vector<3, T>& v)
     return Vector<3, T>(to_radians(v.x), to_radians(v.y), to_radians(v.z));
 }
 
-
-};
+}

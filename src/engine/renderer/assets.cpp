@@ -12,6 +12,9 @@ void AssetManager::flush()
 {
     m_textures.flush();
     m_shaders.flush();
+    m_scenes.flush();
+    m_audio_buffers.flush();
+    m_materials.flush();
 }
 
 void AssetManager::load_asset_folder(const std::string& path)
@@ -28,7 +31,8 @@ void AssetManager::load_asset_folder(const std::string& path)
         }
         else if (ext == ".scene")
         {
-            auto scene = Deserializer::deserialize_scene(asset.path());
+            //auto scene = Deserializer::deserialize_scene(asset.path());
+            auto scene = std::make_shared<Scene>();
             m_scenes.add(asset.path().stem(), scene);
         }
     }
@@ -91,12 +95,13 @@ std::weak_ptr<Scene> AssetManager::get_scene(const std::string& name)
 {
     if (m_scenes.exists(name))
     {
+        m_scenes.get_internal_list().at(name) = Deserializer::deserialize_scene("assets/" + name + ".scene");
         return m_scenes.get(name);
     }
 
     if (std::filesystem::exists("assets/" + name + ".scene"))
     {
-        auto scene = Deserializer::deserialize_scene(name);
+        auto scene = Deserializer::deserialize_scene("assets/" + name + ".scene");
         m_scenes.add(name, std::shared_ptr<Scene>(scene));
         return m_scenes.get(name);
     }

@@ -12,18 +12,20 @@ Application::Application()
     m_instance = this;
 }
 
-void Application::run()
+void Application::run(const std::string& project)
 {
     m_window = std::make_unique<Window>(1920, 1080, "Application");
     Renderer::init();
     Audio::init();
-    AssetManager::get_instance()->load_asset_folder("assets"); // TODO: asset folder from command line (maybe?)
+    AssetManager::get_instance()->load_asset_folder(project); // TODO: asset folder from command line (maybe?)
 
     on_start();
 
     // Send an initial resize event to configure everything
     WindowResizeEvent e(m_window->get_width(), m_window->get_height());
     on_event(e);
+
+    glClearColor(0, 0, 0, 1);
 
     while (m_is_running)
     {
@@ -32,8 +34,7 @@ void Application::run()
         {
             m_is_running = false;
         }
-        
-        glClearColor(0, 0, 0, 1);
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         on_update(1);
 
@@ -41,6 +42,8 @@ void Application::run()
     }
 
     on_destroy();
+
+    AssetManager::get_instance()->flush();
 
     Audio::finalize();
 }

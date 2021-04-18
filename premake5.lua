@@ -4,6 +4,7 @@ workspace "engine"
 project "engine"
     kind "StaticLib"
     cppdialect "C++17"
+    buildoptions { "-Wall", "-pedantic" }
 
     targetdir "bin/%{cfg.buildcfg}/engine"
     objdir "obj/%{cfg.buildcfg}/engine"
@@ -28,6 +29,7 @@ project "engine"
 project "editor"
     kind "ConsoleApp"
     cppdialect "C++17"
+    buildoptions { "-Wall", "-pedantic" }
 
     targetdir "bin/%{cfg.buildcfg}/editor"
     objdir "obj/%{cfg.buildcfg}/editor"
