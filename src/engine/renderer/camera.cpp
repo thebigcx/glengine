@@ -95,9 +95,7 @@ void Camera::calculate_projection()
 void Camera::set_main_camera(Camera* camera)
 {
     if (main_camera)
-    {
         main_camera->m_is_main_camera = false;
-    }
     
     main_camera = camera;
 

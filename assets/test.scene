@@ -1,27 +1,25 @@
 Game Objects:
   - Game Object:
-      Name: Sprite
+      Name: Game Object
       Transform:
         Translation: [0, 0, 0]
-        Rotation: [0, 0, 0]
+        Rotation: [270, 0, 0]
         Scale: [1, 1, 1]
       Components:
-        Sprite:
-          Texture: None
-          Color: [1, 1, 1]
-          UV 1: [0, 0]
-          UV 2: [0, 0]
-          Use UVs: false
+        Mesh Renderer:
+          Material: Material.0
+        Mesh:
+          Path: assets/gun.fbx
   - Game Object:
       Name: Camera
       Transform:
-        Translation: [0, 0, 0]
+        Translation: [0, 0, 10]
         Rotation: [0, 0, 0]
         Scale: [1, 1, 1]
       Components:
         Camera:
-          Main: false
-          Projection Type: Orthographic
+          Main: true
+          Projection Type: Perspective
           Orthographic:
             Size: 10
             Near Clip: -1
@@ -30,23 +28,3 @@ Game Objects:
             FOV: 45
             Near Clip: 0.100000001
             Far Clip: 100
-  - Game Object:
-      Name: Audio Source
-      Transform:
-        Translation: [0, 0, 0]
-        Rotation: [0, 0, 0]
-        Scale: [1, 1, 1]
-      Components:
-        Audio Source:
-          Path: None
-  - Game Object:
-      Name: Game Object
-      Transform:
-        Translation: [0, 0, 0]
-        Rotation: [0, 0, 0]
-        Scale: [1, 1, 1]
-      Components:
-        Mesh:
-          Path: ""
-        Mesh Renderer:
-          Material: None

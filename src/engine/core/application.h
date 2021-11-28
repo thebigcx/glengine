@@ -15,6 +15,8 @@ public:
 
     void run(const std::string& project);
 
+    void quit() { m_is_running = false; };
+
     virtual void on_start() = 0;
     virtual void on_update(float dt) = 0;
     virtual void on_destroy() = 0;

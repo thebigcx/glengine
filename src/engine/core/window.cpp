@@ -23,7 +23,11 @@ Window::Window(uint32_t width, uint32_t height, const std::string& title)
     : m_title(title)
 {
     glfwInit();
-    m_window_handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    m_window_handle = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+    //m_window_handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
     glfwSwapInterval(1);
     glfwMakeContextCurrent(m_window_handle);

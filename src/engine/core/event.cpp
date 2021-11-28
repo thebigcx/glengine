@@ -17,3 +17,9 @@ KeyPressEvent::KeyPressEvent(Key key)
 {
 
 }
+
+ScriptErrorEvent::ScriptErrorEvent(const std::string& msg)
+    : Event(EventType::ScriptError), m_msg(msg)
+{
+
+}

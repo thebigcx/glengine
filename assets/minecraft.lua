@@ -5,9 +5,9 @@ function on_start()
             for z = 0, 4 do
                 obj = GameObject:this():create_child("Block")
                 mesh = obj:create_component("Mesh")
-                mesh:set_mesh("assets/test.fbx")
+                mesh:set_mesh("assets/cube.fbx")
                 mesh_renderer = obj:create_component("MeshRenderer")
-                mesh_renderer:set_material("block_material")
+                mesh_renderer:set_material("Material.0")
                 obj.transform:set_translation(x, y, z);
                 obj.transform:set_scale(0.5, 0.5, 0.5)
             end

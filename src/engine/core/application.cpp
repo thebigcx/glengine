@@ -4,6 +4,8 @@
 #include "engine/audio/audio.h"
 #include "engine/renderer/assets.h"
 
+#include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -14,7 +16,7 @@ Application::Application()
 
 void Application::run(const std::string& project)
 {
-    m_window = std::make_unique<Window>(1920, 1080, "Application");
+    m_window = std::make_unique<Window>(3840, 2160, "Application");
     Renderer::init();
     Audio::init();
     AssetManager::get_instance()->load_asset_folder(project); // TODO: asset folder from command line (maybe?)

@@ -4,6 +4,9 @@
 #include "engine/scene/node.h"
 #include "engine/renderer/sprite.h"
 #include "engine/renderer/camera.h"
+#include "engine/renderer/mesh.h"
+#include "engine/lua/lua_script.h"
+#include "engine/renderer/mesh_renderer.h"
 #include "engine/audio/audio.h"
 
 #include "editor/fork_awesome/fork_awesome_icons.h"
@@ -23,9 +26,17 @@ void ScenePanel::render_node(Node* node)
 
     if (node->has_component<Camera>())
         icon = ICON_FK_VIDEO_CAMERA;
-    if (node->has_component<Sprite>())
+    else if (node->has_component<Sprite>())
         icon = ICON_FK_PICTURE_O;
-    
+    else if (node->has_component<Mesh>() || node->has_component<MeshRenderer>())
+        icon = ICON_FK_CUBE;
+    else if (node->has_component<AudioListener>())
+        icon = ICON_FK_HEADPHONES;
+    else if (node->has_component<AudioSource>())
+        icon = ICON_FK_MUSIC;
+    else if (node->has_component<LuaScript>())
+        icon = ICON_FK_CODE;
+
     bool is_open = ImGui::TreeNodeEx((icon + " " + node->get_name()).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth);
 
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
@@ -92,6 +103,7 @@ void ScenePanel::imgui_render()
 
         if (ImGui::BeginMenu(ICON_FK_PLUS " Create"))
         {
+            // TODO: this is shit
             if (ImGui::MenuItem(ICON_FK_FILE " Empty Game Object"))
             {
                 auto object = m_scene_context.lock()->create_node("Game Object");
@@ -102,6 +114,9 @@ void ScenePanel::imgui_render()
             {
                 auto object = m_scene_context.lock()->create_node("Camera");
                 object->create_component<Camera>();
+                if (!Camera::main_camera)
+                    Camera::set_main_camera(object->get_component<Camera>());
+
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }
@@ -112,10 +127,25 @@ void ScenePanel::imgui_render()
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }
-            if (ImGui::MenuItem(ICON_FK_PICTURE_O " Audio Source"))
+            if (ImGui::MenuItem(ICON_FK_MUSIC " Audio Source"))
             {
                 auto object = m_scene_context.lock()->create_node("Audio Source");
                 object->create_component<AudioSource>();
+                InspectorPanel::selection_type = SelectionType::Node;
+                InspectorPanel::node_selection = object;
+            }
+            if (ImGui::MenuItem(ICON_FK_CUBE " Mesh"))
+            {
+                auto object = m_scene_context.lock()->create_node("Mesh");
+                object->create_component<Mesh>();
+                object->create_component<MeshRenderer>();
+                InspectorPanel::selection_type = SelectionType::Node;
+                InspectorPanel::node_selection = object;
+            }
+            if (ImGui::MenuItem(ICON_FK_HEADPHONES " Audio Listener"))
+            {
+                auto object = m_scene_context.lock()->create_node("Audio Listener");
+                object->create_component<AudioListener>();
                 InspectorPanel::selection_type = SelectionType::Node;
                 InspectorPanel::node_selection = object;
             }

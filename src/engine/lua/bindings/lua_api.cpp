@@ -318,7 +318,7 @@ void LuaAPI::register_api(const LuaScript& script)
 
     lua_getglobal(l, "require");
     lua_pushstring(l, "src/engine/lua/bindings/native/vector3");
-    lua_call(l, 1, 1);
+    lua_pcall(l, 1, 1, 0);
 
     lua_newtable(l);
     lua_pushvalue(l, lua_gettop(l));

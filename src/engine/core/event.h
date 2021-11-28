@@ -1,12 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include "engine/core/keyboard.h"
 
 enum class EventType
 {
-    WindowResize, KeyPress
+    WindowResize, KeyPress, ScriptError
 };
 
 class Event
@@ -44,4 +45,15 @@ public:
 
 private:
     Key m_key;
+};
+
+class ScriptErrorEvent : public Event
+{
+public:
+    ScriptErrorEvent(const std::string& msg);
+
+    const std::string& get_msg() const { return m_msg; }
+
+private:
+    std::string m_msg;
 };

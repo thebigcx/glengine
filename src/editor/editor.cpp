@@ -13,10 +13,13 @@
 #include "editor/panels/scene_panel.h"
 #include "editor/panels/inspector_panel.h"
 #include "editor/panels/assets_panel.h"
+#include "editor/panels/debug_panel.h"
 
 #include "imgui/imgui.h"
 #include "editor/imguizmo/ImGuizmo.h"
 #include "editor/fork_awesome/fork_awesome_icons.h"
+
+#include <iostream>
 
 #include <glad/glad.h>
 
@@ -27,7 +30,7 @@ Editor::Editor()
 
 void Editor::on_start()
 {
-    Scene::current_scene = AssetManager::get_instance()->get_scene("test");
+    Scene::current_scene = AssetManager::get_instance()->get_scene("new");
 
     ImGuiLayer::init();
     ScenePanel::set_scene(Scene::current_scene.lock());
@@ -96,6 +99,7 @@ void Editor::on_update(float dt)
     ScenePanel::imgui_render();
     InspectorPanel::imgui_render();
     AssetsPanel::imgui_render();
+    DebugPanel::imgui_render();
 
     ImGui::Begin("ScenePlay");
     if (ImGui::Button(ICON_FK_PLAY))
@@ -180,6 +184,11 @@ void Editor::on_event(Event& e)
         }
     }
 
+    if (e.get_type() == EventType::ScriptError)
+    {
+        DebugPanel::write_msg(static_cast<ScriptErrorEvent&>(e).get_msg() + "\n");
+    }
+    
     if (e.get_type() != EventType::WindowResize || m_is_playing) // Viewport is different to window with ImGui
     {
         Scene::current_scene.lock()->on_event(e);
@@ -195,6 +204,10 @@ void Editor::render_menu_bar()
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
                 Serializer::serialize_scene(Scene::current_scene.lock(), "assets/test.scene");
+            }
+            if (ImGui::MenuItem("Exit", "Ctrl+Q"))
+            {
+                Application::get_instance()->quit();
             }
 
             ImGui::EndMenu();
